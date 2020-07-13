@@ -51,6 +51,10 @@
 
 
 <body>
+  <!--动态线条背景-->
+  <script type="text/javascript"
+  color="20,220,220" opacity='0.8' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
+  </script>
   <header style="height: 60vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
@@ -176,7 +180,7 @@
           >
           
             <div class="about-avatar">
-              <img src="/img/ws.jpg" srcset="/img/loading.gif"
+              <img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo@master/img/ws.jpg" srcset="/img/loading.gif"
                    class="img-fluid" alt="avatar">
             </div>
           
@@ -279,7 +283,7 @@
   <div class="text-center py-3">
     <p id="hitokoto">:D 获取中...</p>
     <script>
-      fetch('https://v1.hitokoto.cn')
+      fetch('https://v1.hitokoto.cn/?c=b')
         .then(response => response.json())
         .then(data => {
           const hitokoto = document.getElementById('hitokoto')
@@ -312,7 +316,7 @@
           if(String(snum).length ==1 ){
                     snum = "0" + snum;
           }
-          document.getElementById("timeDate").innerHTML = "本站安全运行&nbsp"+dnum+"&nbsp天";
+          document.getElementById("timeDate").innerHTML = "本站已安全运行&nbsp"+dnum+"&nbsp天";
           document.getElementById("times").innerHTML = hnum + "&nbsp小时&nbsp" + mnum + "&nbsp分&nbsp" + snum + "&nbsp秒";
       }
       setInterval("createtime()",250);
