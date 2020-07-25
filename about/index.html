@@ -49,12 +49,7 @@
   <script  src="/js/utils.js" ></script>
 <meta name="generator" content="Hexo 4.2.1"></head>
 
-
 <body>
-  <!--动态线条背景-->
-  <script type="text/javascript"
-  color="220,220,220" opacity='0.8' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
-  </script>
   <header style="height: 60vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
@@ -162,7 +157,7 @@
           <div class="container text-center white-text fadeInUp">
             <span class="h2" id="subtitle">
               
-                关于
+                About
               
             </span>
 
@@ -200,7 +195,7 @@
         
         
         
-        <a href="https://github.com" class="
+        <a href="https://github.com/WuKongBlog" class="
            hint--bottom hint--rounded"
            aria-label=GitHub
         >
@@ -211,11 +206,11 @@
         
         
         
-        <a href="https://douban.com" class="
+        <a href="http://weibo.com/u/5346122625" class="
            hint--bottom hint--rounded"
-           aria-label=豆瓣
+           aria-label=微博
         >
-          <i class="iconfont icon-douban-fill" aria-hidden="true"></i>
+          <i class="iconfont icon-weibo-fill" aria-hidden="true"></i>
           
         </a>
       
@@ -228,7 +223,7 @@
         >
           <i class="iconfont icon-wechat-fill" aria-hidden="true"></i>
           
-            <img class="qr-img" src="/img/favicon.png" srcset="/img/loading.gif" alt="qrcode" />
+            <img class="qr-img" src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo@master/img/QRcode.png" srcset="/img/loading.gif" alt="qrcode" />
           
         </a>
       
@@ -236,7 +231,7 @@
   </div>
 </div>
 <div class="mt-5 markdown-body">
-  <h1 id="hello-world"><a class="markdownIt-Anchor" href="#hello-world"></a> Hello World!</h1>
+  <p>清晨、黄昏、天空 和飞鸟，代码、诗歌、活着 和爱你。</p>
 
 </div>
 
@@ -286,11 +281,13 @@
   <div class="text-center py-3">
     <p id="hitokoto">:D 获取中...</p>
     <script>
-      fetch('https://v1.hitokoto.cn/?c=b')
+      fetch('https://v1.hitokoto.cn/?c=i')
         .then(response => response.json())
         .then(data => {
           const hitokoto = document.getElementById('hitokoto')
-          hitokoto.innerText = data.hitokoto
+          const from = document.getElementById('from')
+          const from_who = document.getElementById('from_who')
+          hitokoto.innerText = data.hitokoto + '  「' + data.from + '」  ' + data.from_who
           })
           .catch(console.error)
     </script>
@@ -319,48 +316,19 @@
           if(String(snum).length ==1 ){
                     snum = "0" + snum;
           }
-          document.getElementById("timeDate").innerHTML = "本站已安全运行&nbsp"+dnum+"&nbsp天";
+          document.getElementById("timeDate").innerHTML = "本站已运行&nbsp"+dnum+"&nbsp天";
           document.getElementById("times").innerHTML = hnum + "&nbsp小时&nbsp" + mnum + "&nbsp分&nbsp" + snum + "&nbsp秒";
       }
       setInterval("createtime()",250);
       </script>
     </div>
     <div>
+      <span>©2020 WuKongBlog | Powered by</span>
       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
-      <i class="iconfont icon-love"></i>
+      <span> | Theme by</span>
       <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
-        <span>Fluid</span></a>
+      <span>Fluid</span></a>
     </div>
-    
-  <div class="statistics">
-    
-    
-
-    
-      
-        <!-- LeanCloud 统计PV -->
-        <span id="leancloud-site-pv-container" style="display: none">
-            总访问量 
-            <span id="leancloud-site-pv"></span>
-             次
-          </span>
-      
-      
-        <!-- LeanCloud 统计UV -->
-        <span id="leancloud-site-uv-container" style="display: none">
-            总访客数 
-            <span id="leancloud-site-uv"></span>
-             人
-          </span>
-      
-
-    
-  </div>
-
-
-    
-
-    
   </div>
 </footer>
 
@@ -689,7 +657,6 @@
   
 
   
-
 
 
 
