@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png"><link rel="icon" type="image/png" href="/img/favicon.png"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no"><meta http-equiv="x-ua-compatible" content="ie=edge"><meta name="theme-color" content="#2f4154"><meta name="description" content=""><meta name="author" content="Wu Kong"><meta name="keywords" content=""><title>摄影测量与计算机视觉基础知识 - WuKongBlog</title><link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css"><link rel="stylesheet" href="/lib/hint/hint.min.css"><link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/dracula.min.css"><link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css"><link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css"><link rel="stylesheet" href="/css/main.css"><script src="/js/utils.js"></script><meta name="generator" content="Hexo 4.2.1"></head><body><header style="height:70vh"><nav id="navbar" class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar"><div class="container"><a class="navbar-brand" href="/">&nbsp;<strong>WuKongBlog</strong>&nbsp;</a> <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><div class="animated-icon"><span></span><span></span><span></span></div></button><div class="collapse navbar-collapse" id="navbarSupportedContent"><ul class="navbar-nav ml-auto text-center"><li class="nav-item"><a class="nav-link" href="/"><i class="iconfont icon-home-fill"></i> 首页</a></li><li class="nav-item"><a class="nav-link" href="/archives/"><i class="iconfont icon-archive-fill"></i> 归档</a></li><li class="nav-item"><a class="nav-link" href="/categories/"><i class="iconfont icon-category-fill"></i> 分类</a></li><li class="nav-item"><a class="nav-link" href="/tags/"><i class="iconfont icon-tags-fill"></i> 标签</a></li><li class="nav-item"><a class="nav-link" href="/about/"><i class="iconfont icon-user-fill"></i> 关于</a></li><li class="nav-item"><a class="nav-link" href="/links/"><i class="iconfont icon-link-fill"></i> 友链</a></li><li class="nav-item" id="search-btn"><a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i class="iconfont icon-search"></i>&nbsp;&nbsp;</a></li></ul></div></div></nav><div class="view intro-2" id="background" parallax="true" style="background:url(https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo@master/img/banner11.jpg) no-repeat center center;background-size:cover"><div class="full-bg-img"><div class="mask flex-center" style="background-color:rgba(0,0,0,.3)"><div class="container text-center white-text fadeInUp"><span class="h2" id="subtitle">摄影测量与计算机视觉基础知识</span><div class="mt-3 post-meta"><i class="iconfont icon-date-fill" aria-hidden="true"></i> <time datetime="2020-09-14 21:00">2020年9月14日 晚上</time></div><div class="mt-1"><span class="post-meta mr-2"><i class="iconfont icon-chart"></i> 2.3k 字 </span><span class="post-meta mr-2"><i class="iconfont icon-clock-fill"></i> 46 分钟 </span><span id="leancloud-post-views-container" class="post-meta" style="display:none"><i class="iconfont icon-eye" aria-hidden="true"></i> <span id="leancloud-post-views"></span> 次</span></div></div></div></div></div></header><main><div class="container-fluid"><div class="row"><div class="d-none d-lg-block col-lg-2"></div><div class="col-lg-8 nopadding-md"><div class="container nopadding-md" id="board-ctn"><div class="py-5" id="board"><div class="post-content mx-auto" id="post"><p class="note note-info">本文最后更新于：2020年9月14日 晚上</p><article class="markdown-body"><h1 id="摄影测量与计算机视觉基础知识"><a href="#摄影测量与计算机视觉基础知识" class="headerlink" title="摄影测量与计算机视觉基础知识"></a>摄影测量与计算机视觉基础知识</h1><h2 id="基础坐标系"><a href="#基础坐标系" class="headerlink" title="基础坐标系"></a>基础坐标系</h2><p><strong><em>摄影测量：</em></strong></p><ul><li><p><strong>像方</strong></p><ul><li><p><strong>像平面坐标系</strong></p><p>以主点为原点的右手平面坐标系，用$o-xy$表示。注意，主点为摄影中心在像平面上的投影点，其不一定位于图像中心。</p></li><li><p><strong>框标平面坐标系</strong></p><p>以框标连线交点为原点的右手平面坐标系，用$P-xy$表示。需要注意的是现代的数字影像早已取消了框标，因此这个坐标系现今是指以图像中心为原点的右手平面坐标系，与计算机视觉中的图像坐标系类似。在实际应用中通常采用该坐标系来表示像点的位置，而在摄影测量解析计算中，像点的坐标应采用以像主点为原点的像平面坐标系中的坐标，因此，当像主点与图像中心不重合时，须将框标平面坐标系原点平移至像主点。</p></li><li><p><strong>像空间坐标系</strong></p><p>以摄影中心$S$为坐标原点，$x、y$轴与像平面坐标系的$x、y$轴平行，$z$轴与光轴重合，形成像空间右手直角坐标系$S-xyz$。</p></li><li><p><strong>像空间辅助坐标系</strong></p><p>像点的像空间坐标可以直接从像面平面坐标得到$(x,y,-f)$，但由于各个相片的像空间坐标系不统一，不便于计算，因此需要建立一种相对统一的坐标系即像空间辅助坐标系$S-uvw$。其坐标原点仍取摄影中心$S$，坐标轴依情况而定，通常有三种选取方法：</p><ol><li>取$u、v、w$各轴分别平行于地面摄影测量坐标系$D-XYZ$；</li><li>以每条航线的第一张相片的像空间坐标系作为像空间辅助坐标系；</li><li>以每个像片对的左片作为$uw$平面，过原点且垂直于$uw$平面的轴为v构成右手直角坐标系。</li></ol></li></ul></li><li><p><strong>物方</strong></p><ul><li><p><strong>大地测量坐标系</strong></p><p>大地测量坐标系（地面测量坐标系）通常是指空间大地坐标基准下的空间左手直角坐标系，用$T-X_tY_tZ_t$表示。摄影测量方法求得的地面点坐标最后要以此坐标形式提供给用户。</p></li><li><p><strong>地面摄影测量坐标系</strong></p><p>因像空间辅助坐标系是右手系，大地测量坐标系是左手系，两者之间转换困难，因此建立了地面摄影测量坐标系作为过渡性坐标系，用$D-XYZ$表示。$X$轴方向大致与航向一致，$Y$轴与$X$轴正交，$Z$轴与$XY$构成右手系。</p></li></ul></li></ul><p><strong><em>计算机视觉：</em></strong></p><ul><li><p><strong>像方</strong></p><ul><li><p><strong>像素坐标系</strong></p><p>以图像左上角为原点建立的坐标系$uv$,单位为$pixel$。</p></li><li><p><strong>图像坐标系</strong></p><p>类似与摄影测量中的框标平面坐标系，以图像中心为原点，表示方法为$o-xy$，单位为$mm$。</p></li><li><p><strong>相机坐标系</strong></p><p>类似与摄影测量中的像空间辅助坐标系，以相机的光心为坐标原点，$X$轴和$Y$轴分别平行于图像坐标系的$x$轴和$y$轴，相机的光轴为$Z$轴，表示方法为$O_c-X_cY_cZ_c$。</p></li></ul></li><li><p><strong>物方</strong></p><ul><li><p><strong>世界坐标系</strong></p><p>类似与摄影测量中的地面摄影测量坐标系，表示方法为$O_w-X_wY_wZ_w$。</p></li></ul></li></ul><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul><li><p><strong>畸变系数</strong></p><p>​ 镜头畸变分为径向畸变和切向畸变。径向畸变的产生原因是光线在远离透镜中心的地方比靠近中心的地方更加弯曲，其畸变系数为$k_1,k_2,k_3$；切向畸变产生的原因是透镜不完全平行于图像平面，其畸变系数为$p_1,p_2$。</p></li><li><p><strong>内方位元素</strong></p><p>​ 内方位元素是描述摄影中心与相片之间相关位置的三个参数，即摄影中心$s$到相片的垂距$f$，以及像主点（摄影中心垂直投影到相片上的一点）在图像坐标系中的坐标$x_0,y_0$。</p></li><li><p><strong>外方位元素</strong></p><p>​ 外方位元素是描述相片在摄影瞬间的空间位置和姿态的六个参数，包括三个直线元素和三个角元素。三个直线元素用于描述摄影中心的空间坐标值$X_s,Y_s,Z_s$，三个角元素用于描述像片的空间姿态 $ \omega,\varphi,\kappa$。</p></li><li><p><strong>相对定向元素</strong></p><p>​ 相对定向元素是指确定摄影瞬间相邻两像片间相对位置和姿态的参数，相对定向元素共有五个，这五个相对定向元素随着所选取的像空间辅助坐标系的不同而不同，通常有两种不同的表达形式，下文会详细说明。</p></li><li><p><strong>绝对定向元素</strong></p><p>​ 绝对定向元素是指确定立体模型对于物方空间的方位和比例所需要的独立参数，绝对定向元素共有七个，包括一个比例尺缩放分量，三个旋转分量和三个平移分量。</p></li><li><p><strong>投影</strong></p><p>​ 投影是指实际像点去镜头畸变转换成理想像点再转换成物点的过程。</p></li><li><p><strong>重投影</strong></p><p>​ 重投影是指物点转换成理想像点加镜头畸变再转换成实际像点的过程。</p></li><li><p><strong>光心</strong></p><p>​ 光心即摄影中心（投影中心）。</p></li><li><p><strong>基线</strong></p><p>​ 基线是指两相片摄影中心的连线。</p></li><li><p><strong>核面</strong></p><p>​ 核面（极面）是指通过摄影基线与任一物方点所作的平面。</p></li><li><p><strong>核线</strong></p><p>​ 核线（极线）是指核面与像面的交线。</p></li><li><p><strong>核点</strong></p><p>​ 核点（极点）是指摄影基线与像平面的交点。</p><p>要明确摄影测量的最终目标是由像点坐标计算得到其对应的物点坐标，以此来建立三维模型。</p></li></ul><h2 id="共线方程、后方交会、前方交会"><a href="#共线方程、后方交会、前方交会" class="headerlink" title="共线方程、后方交会、前方交会"></a>共线方程、后方交会、前方交会</h2><p><strong><em>摄影测量：</em></strong></p><ul><li><p><strong>共线方程</strong></p><p>​ 共线方程是指根据投影中心、像点、物点三点共线的几何关系所建立的方程，将像点坐标、物点坐标与内外方位元素联系了起来。</p></li><li><p><strong>后方交会</strong></p><p>​ 恢复相片外方位元素的过程即为后方交会。</p></li><li><p><strong>前方交会</strong></p><p>​ 由两张相片的内外方位元素及像点坐标求得对应物点坐标的过程即为前方交会。</p></li></ul><p><strong><em>计算机视觉：</em></strong></p><p>​ 下面让我们想象一个<strong>重投影</strong>的过程，即由物点坐标一步步求得像点坐标的过程。</p><p><strong>Step1: 世界坐标系 -&gt; 相机坐标系</strong></p><script type="math/tex;mode=display">\begin{bmatrix}X_c\\Y_c\\Z_c\end{bmatrix}=R\left(\begin{bmatrix}X_w\\Y_w\\Z_w\end{bmatrix}-\begin{bmatrix}X_s\\Y_s\\Z_s\end{bmatrix}\right)</script><script type="math/tex;mode=display">\left[\begin{array}{c}
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2"><meta name="theme-color" content="#222"><meta name="generator" content="Hexo 4.2.1"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png"><link rel="mask-icon" href="/images/logo.svg" color="#222"><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/lib/font-awesome/css/all.min.css"><script id="hexo-configurations">var NexT=window.NexT||{},CONFIG={hostname:"yoursite.com",root:"/",scheme:"Muse",version:"7.8.0",exturl:!1,sidebar:{position:"left",display:"post",padding:18,offset:12,onmobile:!1},copycode:{enable:!1,show_result:!1,style:null},back2top:{enable:!0,sidebar:!1,scrollpercent:!1},bookmark:{enable:!1,color:"#222",save:"auto"},fancybox:!1,mediumzoom:!1,lazyload:!1,pangu:!1,comments:{style:"tabs",active:null,storage:!0,lazyload:!1,nav:null},algolia:{hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}},localsearch:{enable:!1,trigger:"auto",top_n_per_article:1,unescape:!1,preload:!1},motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}}}</script><meta name="description" content="摄影测量与计算机视觉基础知识基础坐标系摄影测量：像方像平面坐标系以主点为原点的右手平面坐标系，用$o\text{-}xy$表示。注意，主点为摄影中心在像平面上的投影点，其不一定位于图像中心。框标平面坐标系以框标连线交点为原点的右手平面坐标系，用$P\text{-}xy$表示。需要注意的是现代的数字影像早已取消了框标，因此这个坐标系现今是指以图像中心为原点的右手平面坐标系，与计算机视觉中的图像坐标系"><meta property="og:type" content="article"><meta property="og:title" content="摄影测量与计算机视觉基础知识"><meta property="og:url" content="http://yoursite.com/2020/09/14/%E6%91%84%E5%BD%B1%E6%B5%8B%E9%87%8F%E4%B8%8E%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.html"><meta property="og:site_name" content="WuKongBlog"><meta property="og:description" content="摄影测量与计算机视觉基础知识基础坐标系摄影测量：像方像平面坐标系以主点为原点的右手平面坐标系，用$o\text{-}xy$表示。注意，主点为摄影中心在像平面上的投影点，其不一定位于图像中心。框标平面坐标系以框标连线交点为原点的右手平面坐标系，用$P\text{-}xy$表示。需要注意的是现代的数字影像早已取消了框标，因此这个坐标系现今是指以图像中心为原点的右手平面坐标系，与计算机视觉中的图像坐标系"><meta property="og:locale" content="zh_CN"><meta property="article:published_time" content="2020-09-14T13:00:00.000Z"><meta property="article:modified_time" content="2021-03-03T13:02:54.524Z"><meta property="article:author" content="Wu Kong"><meta property="article:tag" content="摄影测量"><meta property="article:tag" content="计算机视觉"><meta name="twitter:card" content="summary"><link rel="canonical" href="http://yoursite.com/2020/09/14/%E6%91%84%E5%BD%B1%E6%B5%8B%E9%87%8F%E4%B8%8E%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><script id="page-configurations">CONFIG.page={sidebar:"",isHome:!1,isPost:!0,lang:"zh-CN"}</script><title>摄影测量与计算机视觉基础知识 | WuKongBlog</title><noscript><style>.sidebar-inner,.use-motion .brand,.use-motion .collection-header,.use-motion .comments,.use-motion .menu-item,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.use-motion .logo-line-before i{left:initial}.use-motion .logo-line-after i{right:initial}</style></noscript></head><body itemscope itemtype="http://schema.org/WebPage"><div class="container use-motion"><div class="headband"></div><header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-container"><div class="site-nav-toggle"><div class="toggle" aria-label="切换导航栏"><span class="toggle-line toggle-line-first"></span> <span class="toggle-line toggle-line-middle"></span> <span class="toggle-line toggle-line-last"></span></div></div><div class="site-meta"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span><h1 class="site-title">WuKongBlog</h1><span class="logo-line-after"><i></i></span></a></div><div class="site-nav-right"><div class="toggle popup-trigger"></div></div></div><nav class="site-nav"><ul id="menu" class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li></ul></nav></div></header><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span>0%</span></div><main class="main"><div class="main-inner"><div class="content-wrap"><div class="content post posts-expand"><article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN"><link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/14/%E6%91%84%E5%BD%B1%E6%B5%8B%E9%87%8F%E4%B8%8E%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="image" content="/images/avatar.gif"><meta itemprop="name" content="Wu Kong"><meta itemprop="description" content=""></span><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="WuKongBlog"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">摄影测量与计算机视觉基础知识</h1><div class="post-meta"><span class="post-meta-item"><span class="post-meta-item-icon"><i class="far fa-calendar"></i> </span><span class="post-meta-item-text">发表于</span> <time title="创建时间：2020-09-14 21:00:00" itemprop="dateCreated datePublished" datetime="2020-09-14T21:00:00+08:00">2020-09-14</time> </span><span class="post-meta-item"><span class="post-meta-item-icon"><i class="far fa-calendar-check"></i> </span><span class="post-meta-item-text">更新于</span> <time title="修改时间：2021-03-03 21:02:54" itemprop="dateModified" datetime="2021-03-03T21:02:54+08:00">2021-03-03</time></span></div></header><div class="post-body" itemprop="articleBody"><h1 id="摄影测量与计算机视觉基础知识"><a href="#摄影测量与计算机视觉基础知识" class="headerlink" title="摄影测量与计算机视觉基础知识"></a>摄影测量与计算机视觉基础知识</h1><h2 id="基础坐标系"><a href="#基础坐标系" class="headerlink" title="基础坐标系"></a>基础坐标系</h2><p><strong><em>摄影测量：</em></strong></p><ul><li><p><strong>像方</strong></p><ul><li><p><strong>像平面坐标系</strong></p><p>以主点为原点的右手平面坐标系，用$o\text{-}xy$表示。注意，主点为摄影中心在像平面上的投影点，其不一定位于图像中心。</p></li><li><p><strong>框标平面坐标系</strong></p><p>以框标连线交点为原点的右手平面坐标系，用$P\text{-}xy$表示。需要注意的是现代的数字影像早已取消了框标，因此这个坐标系现今是指以图像中心为原点的右手平面坐标系，与计算机视觉中的图像坐标系类似。在实际应用中通常采用该坐标系来表示像点的位置，而在摄影测量解析计算中，像点的坐标应采用以像主点为原点的像平面坐标系中的坐标，因此，当像主点与图像中心不重合时，须将框标平面坐标系原点平移至像主点。</p></li><li><p><strong>像空间坐标系</strong></p><p>以摄影中心$S$为坐标原点，$x$、$y$轴与像平面坐标系的$x$、$y$轴平行，$z$轴与光轴重合，形成像空间右手直角坐标系$S\text{-}xyz$。</p></li><li><p><strong>像空间辅助坐标系</strong></p><p>像点的像空间坐标可以直接从像面平面坐标得到$(x,y,\text{-}f)$，但由于各个相片的像空间坐标系不统一，不便于计算，因此需要建立一种相对统一的坐标系即像空间辅助坐标系$S\text{-}uvw$。其坐标原点仍取摄影中心$S$，坐标轴依情况而定，通常有三种选取方法：</p><ol><li>取$u$、$v$、$w$各轴分别平行于地面摄影测量坐标系$D\text{-}XYZ$；</li><li>以每条航线的第一张相片的像空间坐标系作为像空间辅助坐标系；</li><li>以每个像片对的左片作为$uw$平面，过原点且垂直于$uw$平面的轴为v构成右手直角坐标系。</li></ol></li></ul></li><li><p><strong>物方</strong></p><ul><li><p><strong>大地测量坐标系</strong></p><p>大地测量坐标系（地面测量坐标系）通常是指空间大地坐标基准下的空间左手直角坐标系，用$T\text{-}X_tY_tZ_t$表示。摄影测量方法求得的地面点坐标最后要以此坐标形式提供给用户。</p></li><li><p><strong>地面摄影测量坐标系</strong></p><p>因像空间辅助坐标系是右手系，大地测量坐标系是左手系，两者之间转换困难，因此建立了地面摄影测量坐标系作为过渡性坐标系，用$D\text{-}XYZ$表示。$X$轴方向大致与航向一致，$Y$轴与$X$轴正交，$Z$轴与$XY$构成右手系。</p></li></ul></li></ul><p><strong><em>计算机视觉：</em></strong></p><ul><li><p><strong>像方</strong></p><ul><li><p><strong>像素坐标系</strong></p><p>以图像左上角为原点建立的坐标系$uv$,单位为$pixel$。</p></li><li><p><strong>图像坐标系</strong></p><p>类似与摄影测量中的框标平面坐标系，以图像中心为原点，表示方法为$o\text{-}xy$，单位为$mm$。</p></li><li><p><strong>相机坐标系</strong></p><p>类似与摄影测量中的像空间辅助坐标系，以相机的光心为坐标原点，$X$轴和$Y$轴分别平行于图像坐标系的$x$轴和$y$轴，相机的光轴为$Z$轴，表示方法为$O_c\text{-}X_cY_cZ_c$。</p></li></ul></li><li><p><strong>物方</strong></p><ul><li><p><strong>世界坐标系</strong></p><p>类似与摄影测量中的地面摄影测量坐标系，表示方法为$O_w\text{-}X_wY_wZ_w$。</p></li></ul></li></ul><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><ul><li><p><strong>畸变系数</strong></p><p>​ 镜头畸变分为径向畸变和切向畸变。径向畸变的产生原因是光线在远离透镜中心的地方比靠近中心的地方更加弯曲，其畸变系数为$k_1,k_2,k_3$；切向畸变产生的原因是透镜不完全平行于图像平面，其畸变系数为$p_1,p_2$。</p></li><li><p><strong>内方位元素</strong></p><p>​ 内方位元素是描述摄影中心与相片之间相关位置的三个参数，即摄影中心$s$到相片的垂距$f$，以及像主点（摄影中心垂直投影到相片上的一点）在图像坐标系中的坐标$x_0,y_0$。</p></li><li><p><strong>外方位元素</strong></p><p>​ 外方位元素是描述相片在摄影瞬间的空间位置和姿态的六个参数，包括三个直线元素和三个角元素。三个直线元素用于描述摄影中心的空间坐标值$X_s,Y_s,Z_s$，三个角元素用于描述像片的空间姿态 $ \omega,\varphi,\kappa$。</p></li><li><p><strong>相对定向元素</strong></p><p>​ 相对定向元素是指确定摄影瞬间相邻两像片间相对位置和姿态的参数，相对定向元素共有五个，这五个相对定向元素随着所选取的像空间辅助坐标系的不同而不同，通常有两种不同的表达形式，下文会详细说明。</p></li><li><p><strong>绝对定向元素</strong></p><p>​ 绝对定向元素是指确定立体模型对于物方空间的方位和比例所需要的独立参数，绝对定向元素共有七个，包括一个比例尺缩放分量，三个旋转分量和三个平移分量。</p></li><li><p><strong>投影</strong></p><p>​ 投影是指实际像点去镜头畸变转换成理想像点再转换成物点的过程。</p></li><li><p><strong>重投影</strong></p><p>​ 重投影是指物点转换成理想像点加镜头畸变再转换成实际像点的过程。</p></li><li><p><strong>光心</strong></p><p>​ 光心即摄影中心（投影中心）。</p></li><li><p><strong>基线</strong></p><p>​ 基线是指两相片摄影中心的连线。</p></li><li><p><strong>核面</strong></p><p>​ 核面（极面）是指通过摄影基线与任一物方点所作的平面。</p></li><li><p><strong>核线</strong></p><p>​ 核线（极线）是指核面与像面的交线。</p></li><li><p><strong>核点</strong></p><p>​ 核点（极点）是指摄影基线与像平面的交点。</p><p>要明确摄影测量的最终目标是由像点坐标计算得到其对应的物点坐标，以此来建立三维模型。</p></li></ul><h2 id="共线方程、后方交会、前方交会"><a href="#共线方程、后方交会、前方交会" class="headerlink" title="共线方程、后方交会、前方交会"></a>共线方程、后方交会、前方交会</h2><p><strong><em>摄影测量：</em></strong></p><ul><li><p><strong>共线方程</strong></p><p>​ 共线方程是指根据投影中心、像点、物点三点共线的几何关系所建立的方程，将像点坐标、物点坐标与内外方位元素联系了起来。</p></li><li><p><strong>后方交会</strong></p><p>​ 恢复相片外方位元素的过程即为后方交会。</p></li><li><p><strong>前方交会</strong></p><p>​ 由两张相片的内外方位元素及像点坐标求得对应物点坐标的过程即为前方交会。</p></li></ul><p><strong><em>计算机视觉：</em></strong></p><p>​ 下面让我们想象一个<strong>重投影</strong>的过程，即由物点坐标一步步求得像点坐标的过程。</p><p><strong>Step1: 世界坐标系 -&gt; 相机坐标系</strong></p><script type="math/tex;mode=display">\begin{bmatrix}X_c\\Y_c\\Z_c\end{bmatrix}=R\left(\begin{bmatrix}X_w\\Y_w\\Z_w\end{bmatrix}-\begin{bmatrix}X_s\\Y_s\\Z_s\end{bmatrix}\right)</script><script type="math/tex;mode=display">\left[\begin{array}{c}
 X_{c} \\
 Y_{c} \\
 Z_{c}
@@ -94,250 +94,68 @@ X_{w} \\
 Y_{w} \\
 Z_{w} \\
 1
-\end{array}\right]</script><ul><li><p><strong>K矩阵</strong></p><script type="math/tex;mode=display">K=\left[\begin{array}{ccc}f & 0 & x_{0} \\ 0 & f & y_{0} \\ 0 & 0 & 1\end{array}\right]</script></li><li><p><strong>T矩阵</strong></p><script type="math/tex;mode=display">T=R[I \mid-C]=[R \mid t]</script></li></ul><ul><li><strong>P矩阵</strong><script type="math/tex;mode=display">P=K R\left[\begin{array}{cccc}1 & 0 & 0 & -X_{S} \\ 0 & 1 & 0 & -Y_{S} \\ 0 & 0 & 1 & -Z_{S}\end{array}\right]=K R[I \mid-C]=K [R \mid t ]=KT</script></li></ul><p><strong>Step3: 图像坐标系 -&gt; 像素坐标系</strong></p><h2 id="共面方程、相对定向、绝对定向"><a href="#共面方程、相对定向、绝对定向" class="headerlink" title="共面方程、相对定向、绝对定向"></a>共面方程、相对定向、绝对定向</h2><p><strong><em>摄影测量：</em></strong></p><ul><li><strong>共面方程</strong></li><li><strong>相对定向</strong></li><li><strong>绝对定向</strong></li></ul><p><strong><em>计算机视觉：</em></strong></p><ul><li><strong>E矩阵</strong></li><li><strong>F矩阵</strong></li><li><strong>H矩阵</strong></li></ul><p>更不动了，哪天有空了再更。。。。</p></article><hr><div><div class="post-metas mb-3"><div class="post-meta"><i class="iconfont icon-tags"></i> <a class="hover-with-bg" href="/tags/%E6%91%84%E5%BD%B1%E6%B5%8B%E9%87%8F/">摄影测量</a> <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a></div></div><p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p><div class="post-prevnext row"><div class="post-prev col-6"></div><div class="post-next col-6"></div></div></div><div class="comments" id="comments"><div id="vcomments"></div><script type="text/javascript">fetch('https://v1.hitokoto.cn/?c=d')
-      .then(response => response.json())
-      .then(data => {
-        const hitokoto = document.getElementById('hitokoto')
-        const from = document.getElementById('from')
-        const myText = data.hitokoto + '  《' + data.from + '》' 
-        function loadValine(myText) {
-        addScript('https://cdn.staticfile.org/valine/1.4.14/Valine.min.js', function () {
-        new Valine({
-          el: "#vcomments",
-          app_id: "fnpNoJhagPcCVo45A9v7M0fy-gzGzoHsz",
-          app_key: "tRUiOgdeqd9QDSxfxXYNhEv1",
-          placeholder: myText,
-          path: window.location.pathname,
-          avatar: "retro",
-          meta: ["nick","mail","link"],
-          pageSize: "10",
-          lang: "zh-CN",
-          highlight: false,
-          recordIP: false,
-          serverURLs: "https://fnpnojha.lc-cn-n1-shared.com",
-        });
-        });
+\end{array}\right]</script><ul><li><p><strong>K矩阵</strong></p><script type="math/tex;mode=display">K=\left[\begin{array}{ccc}f & 0 & x_{0} \\ 0 & f & y_{0} \\ 0 & 0 & 1\end{array}\right]</script></li><li><p><strong>T矩阵</strong></p><script type="math/tex;mode=display">T=R[I \mid-C]=[R \mid t]</script></li></ul><ul><li><strong>P矩阵</strong><script type="math/tex;mode=display">P=K R\left[\begin{array}{cccc}1 & 0 & 0 & -X_{S} \\ 0 & 1 & 0 & -Y_{S} \\ 0 & 0 & 1 & -Z_{S}\end{array}\right]=K R[I \mid-C]=K [R \mid t ]=KT</script></li></ul><p><strong>Step3: 图像坐标系 -&gt; 像素坐标系</strong></p><h2 id="共面方程、相对定向、绝对定向"><a href="#共面方程、相对定向、绝对定向" class="headerlink" title="共面方程、相对定向、绝对定向"></a>共面方程、相对定向、绝对定向</h2><p><strong><em>摄影测量：</em></strong></p><ul><li><strong>共面方程</strong></li><li><strong>相对定向</strong></li><li><strong>绝对定向</strong></li></ul><p><strong><em>计算机视觉：</em></strong></p><ul><li><strong>E矩阵</strong></li><li><strong>F矩阵</strong></li><li><strong>H矩阵</strong></li></ul><p>更不动了，哪天有空了再更。。。。</p></div><footer class="post-footer"><div class="post-tags"><a href="/tags/%E6%91%84%E5%BD%B1%E6%B5%8B%E9%87%8F/" rel="tag"># 摄影测量</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" rel="tag"># 计算机视觉</a></div><div class="post-nav"><div class="post-nav-item"></div><div class="post-nav-item"><a href="/2021/03/03/ACRANSAC/" rel="next" title="ACRANSAC">ACRANSAC <i class="fa fa-chevron-right"></i></a></div></div></footer></article></div><script>window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }</script></div><div class="toggle sidebar-toggle"><span class="toggle-line toggle-line-first"></span> <span class="toggle-line toggle-line-middle"></span> <span class="toggle-line toggle-line-last"></span></div><aside class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc">文章目录</li><li class="sidebar-nav-overview">站点概览</li></ul><div class="post-toc-wrap sidebar-panel"><div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#摄影测量与计算机视觉基础知识"><span class="nav-number">1.</span> <span class="nav-text">摄影测量与计算机视觉基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础坐标系"><span class="nav-number">1.1.</span> <span class="nav-text">基础坐标系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">1.2.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#共线方程、后方交会、前方交会"><span class="nav-number">1.3.</span> <span class="nav-text">共线方程、后方交会、前方交会</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#共面方程、相对定向、绝对定向"><span class="nav-number">1.4.</span> <span class="nav-text">共面方程、相对定向、绝对定向</span></a></li></ol></li></ol></div></div><div class="site-overview-wrap sidebar-panel"><div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person"><p class="site-author-name" itemprop="name">Wu Kong</p><div class="site-description" itemprop="description"></div></div><div class="site-state-wrap motion-element"><nav class="site-state"><div class="site-state-item site-state-posts"><a href="/archives/"><span class="site-state-item-count">3</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-tags"><span class="site-state-item-count">2</span> <span class="site-state-item-name">标签</span></div></nav></div><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/yourname" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yourname" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a> </span><span class="links-of-author-item"><a href="mailto:yourname@gmail.com" title="E-Mail → mailto:yourname@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a></span></div></div></div></aside><div id="sidebar-dimmer"></div></div></main><footer class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2021</span> <span class="with-love"><i class="fa fa-heart"></i> </span><span class="author" itemprop="copyrightHolder">Wu Kong</span></div><div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动</div></div></footer></div><script src="/lib/anime.min.js"></script><script src="/lib/velocity/velocity.min.js"></script><script src="/lib/velocity/velocity.ui.min.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script><script>if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
         }
-        createObserver(loadValine(myText), 'vcomments');
-      })
-      .catch(console.error)</script><noscript>Please enable JavaScript to view the <a href="https://valine.js.org" target="_blank" rel="nofollow noopener noopener">comments powered by Valine.</a></noscript></div></div></div></div></div><div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn"><div id="toc"><p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p><div id="tocbot"></div></div></div></div></div></main><a id="scroll-top-button" href="#" role="button"><i class="iconfont icon-arrowup" aria-hidden="true"></i></a><div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable modal-lg" role="document"><div class="modal-content"><div class="modal-header text-center"><h4 class="modal-title w-100 font-weight-bold">搜索</h4><button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body mx-3"><div class="md-form mb-5"><input type="text" id="local-search-input" class="form-control validate"> <label data-error="x" data-success="v" for="local-search-input">关键词</label></div><div class="list-group" id="local-search-result"></div></div></div></div></div><footer class="mt-5"><div class="text-center py-3"><p id="hitokoto">:D 获取中...</p><script>fetch('https://v1.hitokoto.cn/?c=i')
-        .then(response => response.json())
-        .then(data => {
-          const hitokoto = document.getElementById('hitokoto')
-          const from = document.getElementById('from')
-          const from_who = document.getElementById('from_who')
-          hitokoto.innerText = data.hitokoto + '  「' + data.from + '」  ' + data.from_who
-          })
-          .catch(console.error)</script><div><span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span><script>var now=new Date;function createtime(){var n=new Date("07/10/2020 00:00:00");now.setTime(now.getTime()+250),days=(now-n)/1e3/60/60/24,dnum=Math.floor(days),hours=(now-n)/1e3/60/60-24*dnum,hnum=Math.floor(hours),1==String(hnum).length&&(hnum="0"+hnum),minutes=(now-n)/1e3/60-1440*dnum-60*hnum,mnum=Math.floor(minutes),1==String(mnum).length&&(mnum="0"+mnum),seconds=(now-n)/1e3-86400*dnum-3600*hnum-60*mnum,snum=Math.round(seconds),1==String(snum).length&&(snum="0"+snum),document.getElementById("timeDate").innerHTML="本站已运行&nbsp"+dnum+"&nbsp天",document.getElementById("times").innerHTML=hnum+"&nbsp小时&nbsp"+mnum+"&nbsp分&nbsp"+snum+"&nbsp秒"}setInterval("createtime()",250)</script></div><div><span>©2020 WuKongBlog | Powered by</span> <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <span>| Theme by</span> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a></div></div></footer><script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script><script src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script><script src="/js/debouncer.js"></script><script src="/js/main.js"></script><script src="/js/lazyload.js"></script><script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js"></script><script src="/js/clipboard-use.js"></script><script defer>(function () {
-    // 查询存储的记录
-    function getRecord(Counter, target) {
-      return new Promise(function (resolve, reject) {
-        Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({target})))
-          .then(resp => resp.json())
-          .then(({results, code, error}) => {
-            if (code === 401) {
-              throw error;
-            }
-            if (results && results.length > 0) {
-              var record = results[0];
-              resolve(record);
-            } else {
-              Counter('post', '/classes/Counter', {target, time: 0})
-                .then(resp => resp.json())
-                .then((record, error) => {
-                  if (error) {
-                    throw error;
-                  }
-                  resolve(record);
-                }).catch(error => {
-                console.error('Failed to create', error);
-                reject(error);
-              });
-            }
-          }).catch((error) => {
-          console.error('LeanCloud Counter Error:', error);
-          reject(error);
-        });
-      })
-    }
-
-    // 发起自增请求
-    function increment(Counter, incrArr) {
-      return new Promise(function (resolve, reject) {
-        Counter('post', '/batch', {
-          "requests": incrArr
-        }).then((res) => {
-          res = res.json();
-          if (res.error) {
-            throw res.error;
-          }
-          resolve(res);
-        }).catch((error) => {
-          console.error('Failed to save visitor count', error);
-          reject(error);
-        });
-      });
-    }
-
-    // 构建自增请求体
-    function buildIncrement(objectId) {
-      return {
-        "method": "PUT",
-        "path": `/1.1/classes/Counter/${ objectId }`,
-        "body": {
-          "time": {
-            '__op': 'Increment',
-            'amount': 1
-          }
-        }
-      }
-    }
-
-    // 校验是否为有效的 UV
-    function validUV() {
-      var key = 'LeanCloud_UV_Flag';
-      var flag = localStorage.getItem(key);
-      if (flag) {
-        // 距离标记小于 24 小时则不计为 UV
-        if (new Date().getTime() - parseInt(flag) <= 86400000) {
-          return false;
-        }
-      }
-      localStorage.setItem(key, new Date().getTime().toString());
-      return true;
-    }
-
-    function addCount(Counter) {
-      var enableIncr = 'true' === 'true' && window.location.hostname !== 'localhost';
-      var getterArr = [];
-      var incrArr = [];
-
-      // 请求 PV 并自增
-      var pvCtn = document.querySelector('#leancloud-site-pv-container');
-      if (pvCtn || enableIncr) {
-        var pvGetter = getRecord(Counter, 'site-pv').then((record) => {
-          incrArr.push(buildIncrement(record.objectId))
-          var ele = document.querySelector('#leancloud-site-pv');
-          if (ele) {
-            ele.innerText = record.time + 1;
-            if (pvCtn) {
-              pvCtn.style.display = 'inline';
-            }
-          }
-        });
-        getterArr.push(pvGetter);
-      }
-
-      // 请求 UV 并自增
-      var uvCtn = document.querySelector('#leancloud-site-uv-container');
-      if (uvCtn || enableIncr) {
-        var uvGetter = getRecord(Counter, 'site-uv').then((record) => {
-          var vuv = validUV();
-          vuv && incrArr.push(buildIncrement(record.objectId))
-          var ele = document.querySelector('#leancloud-site-uv');
-          if (ele) {
-            ele.innerText = record.time + (vuv ? 1 : 0);
-            if (uvCtn) {
-              uvCtn.style.display = 'inline';
-            }
-          }
-        });
-        getterArr.push(uvGetter);
-      }
-
-      // 如果是文章，请求文章的浏览数，并自增
-      if ('true' === 'true') {
-        var viewCtn = document.querySelector('#leancloud-post-views-container');
-        if (viewCtn || enableIncr) {
-          var target = decodeURI('/2020/09/14/%E6%91%84%E5%BD%B1%E6%B5%8B%E9%87%8F%E4%B8%8E%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/');
-          var viewGetter = getRecord(Counter, target).then((record) => {
-            incrArr.push(buildIncrement(record.objectId))
-            if (viewCtn) {
-              var ele = document.querySelector('#leancloud-post-views');
-              if (ele) {
-                ele.innerText = (record.time || 0) + 1;
-                viewCtn.style.display = 'inline';
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
               }
-            }
-          });
-          getterArr.push(viewGetter);
+            });
+          }, '', false]
         }
       }
-
-      // 如果启动计数自增，批量发起自增请求
-      if (enableIncr) {
-        Promise.all(getterArr).then(() => {
-          incrArr.length > 0 && increment(Counter, incrArr);
-        })
-      }
-    }
-
-    var app_id = 'fnpNoJhagPcCVo45A9v7M0fy-gzGzoHsz'
-    var app_key = 'tRUiOgdeqd9QDSxfxXYNhEv1'
-    var server_url = 'https://fnpnojha.lc-cn-n1-shared.com'
-
-    function fetchData(api_server) {
-      var Counter = (method, url, data) => {
-        return fetch(`${ api_server }/1.1${ url }`, {
-          method,
-          headers: {
-            'X-LC-Id': app_id,
-            'X-LC-Key': app_key,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data)
-        });
-      };
-
-      addCount(Counter);
-    }
-
-    var api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${ app_id.slice(0, 8).toLowerCase() }.api.lncldglobal.com`;
-
-    if (api_server) {
-      fetchData(api_server);
-    } else {
-      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
-        .then(resp => resp.json())
-        .then(({api_server}) => {
-          fetchData('https://' + api_server);
-        });
-    }
-  })();</script><script src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js"></script><script>$(document).ready(function(){var t=$("#board-ctn").offset().top;tocbot.init({tocSelector:"#tocbot",contentSelector:"article.markdown-body",headingSelector:"h1,h2,h3,h4,h5,h6",linkClass:"tocbot-link",activeLinkClass:"tocbot-active-link",listClass:"tocbot-list",isCollapsedClass:"tocbot-is-collapsed",collapsibleClass:"tocbot-is-collapsible",collapseDepth:0,scrollSmooth:!0,headingsOffset:-t}),0<$(".toc-list-item").length&&$("#toc").css("visibility","visible")})</script><script src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js"></script><script>anchors.options = {
-      placement: "right",
-      visible: "hover",
-      
     };
-    var el = "h1,h2,h3,h4,h5,h6".split(",");
-    var res = [];
-    for (item of el) {
-      res.push(".markdown-body > " + item)
-    }
-    anchors.add(res.join(", "))</script><script src="/js/local-search.js"></script><script>var path="/local-search.xml",inputArea=document.querySelector("#local-search-input");inputArea.onclick=function(){searchFunc(path,"local-search-input","local-search-result"),this.onclick=null}</script><script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js"></script><link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css"><script>$("#post img:not(.no-zoom img, img[no-zoom]), img[zoom]").each(function(){var t=document.createElement("a");$(t).attr("data-fancybox","images"),$(t).attr("href",$(this).attr("src")),$(this).wrap(t)})</script><script>MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };</script><script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js"></script><script type="text/javascript">var a_idx=0;jQuery(document).ready(function(d){d("body").click(function(a){var o=new Array("富强","民主","文明","和谐","自由","平等","公正","法治","爱国","敬业","诚信","友善"),t=d("<span/>").text(o[a_idx]);a_idx=(a_idx+1)%o.length;var n=a.pageX,e=a.pageY;t.css({"z-index":999,top:e-20,left:n,position:"absolute","font-weight":"bold",color:"rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"}),d("body").append(t),t.animate({top:e-180,opacity:0},1500,function(){t.remove()})})})</script><script defer>var _hmt=_hmt||[];!function(){var e=document.createElement("script");e.src="https://hm.baidu.com/hm.js?90241e32c8029a7ce0c7e36ef300a89b";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)}()</script></body></html>
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }</script></body></html>
