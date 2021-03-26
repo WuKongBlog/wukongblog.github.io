@@ -4,6 +4,37 @@
   
     
     <entry>
+      <title>基于影像结构线特征的建筑规则化(2016)</title>
+      <link href="2021/03/26/%E5%9F%BA%E4%BA%8E%E5%BD%B1%E5%83%8F%E7%BB%93%E6%9E%84%E7%BA%BF%E7%89%B9%E5%BE%81%E7%9A%84%E5%BB%BA%E7%AD%91%E8%A7%84%E5%88%99%E5%8C%96-2016/"/>
+      <url>2021/03/26/%E5%9F%BA%E4%BA%8E%E5%BD%B1%E5%83%8F%E7%BB%93%E6%9E%84%E7%BA%BF%E7%89%B9%E5%BE%81%E7%9A%84%E5%BB%BA%E7%AD%91%E8%A7%84%E5%88%99%E5%8C%96-2016/</url>
+      
+        <content type="html"><![CDATA[<h2 id="摘要">摘要</h2><p>基于立体相机的建筑三维重建不可避免的要遭受噪声的影响，使得其缺乏规则性(表现在线特征是否平直，同质区域是否平滑)。本文<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>利用线特征构建了一种新的表面脚手架结构，用于模型规则化。规则化由两个迭代步骤组成：(1) 线特征是在影像上根据亮度和几何信息半自动提取的；(2) 脚手架的空间拓扑结构根据数据忠诚度和拓扑规则进行优化，之后Mesh网通过向脚手架调整达到优化。我们的方法有两个优点：首先，提出的脚手架结构能够准确的描述建筑结构的语义信息。其次，脚手架结构是嵌入在Mesh网中的，能够保留Mesh的连通性，避免表面的畸变和相交现象。<a id="more"></a></p><h2 id="贡献">贡献</h2><ul><li><p>一种新型的脚手架(scaffold)结构，能准确地描述建筑结构，保持模型的规则</p></li><li><p>一种噪声不敏感的支架结构加固方法(通过推导三维线性特征之间的正确空间关系)，并根据推导出的拓扑结构优化表面形状</p></li><li><p>自动/交互式的直线提取，同时利用亮度，几何，城市先验知识</p></li></ul><h2 id="相关工作">相关工作</h2><ul><li>自动化方法</li><li>交互式方法</li><li>基于拓扑约束的方法</li></ul><h2 id="方法概述">方法概述</h2><h3 id="scaffolding">Scaffolding</h3><h4 id="surface-scaffold-structure">Surface Scaffold Structure</h4><p>输入Mesh网，<span class="math inline">\(\mathcal{M}=\left(\mathcal{V}_{m}, \mathcal{E}_{m}\right)\)</span> ，<span class="math inline">\(\mathcal{V}_{m}\)</span> 为点集，<span class="math inline">\(\mathcal{E}_{m}\)</span> 为边集，引入<strong><em>surface scaffold structure</em></strong> 进行规则化。表面脚手架结构包括：</p><ul><li>3D线特征集合 <span class="math inline">\(\mathcal{F}=\left\{F_{i}\right\}, i \in[1, N]\)</span>，<span class="math inline">\(F_i\)</span> 为Mesh网上的一条直线，由一系列相连的边组成。每个<span class="math inline">\(F_i\)</span> 都是由影像直线 <span class="math inline">\(l_i\)</span> 反投影得来。</li><li>脚手架 <span class="math inline">\(\mathcal{S}\)</span> ，由一系列的脚手架直线 <span class="math inline">\(\mathcal{L_s}=\{L_i\},i\in[1,N]\)</span> 组成。定义脚手架图，表示其拓扑结构。</li></ul><p>我们将Mesh网上的顶点投影至它们对应的脚手架直线上，并对Mesh网的其他部分进行平滑，这样就达到了规则化的效果。</p><h4 id="scaffold-topology">Scaffold Topology</h4><p>由于脚手架直线是由2D线反投影而来，由于噪声不可避免的会出现错误。因此，我们对脚手架的拓扑结构进行优化。</p><p>通常，如果两个3D线的端点足够近，它们则为 <strong><em>incident lines</em></strong>(相交)。但是，由于点位置不一定准确，一些距离较近的平行线会被错误定义为 incident lines。因此，仅用端点的邻近度来衡量线是否 incident 是不足够的。所以，我们需要精准的定义邻近端点的空间关系，以便进行脚手架拓扑结构优化。</p><p><strong><em>Local point-wise(LPW) relation</em></strong> 考虑到位置邻近的先决条件，我们对距离小于阈值 <span class="math inline">\(\epsilon_{d}\)</span> 的两个端点 <span class="math inline">\(P_{z}^{i}\)</span> and <span class="math inline">\(P_{z^{\prime}}^{j}\)</span> 引入 LPW 关系 <span class="math inline">\(r=\left(P_{z}^{i}, P_{z^{\prime}}^{j}\right)\)</span>。LPW关系定义为以下四种类型(Fig.2)：</p><ul><li><em>Contiguous</em>，两端点属于同一条线</li><li><em>Incident</em>，两端点属于不同的直线但是位置相同</li><li><em>Parallel</em>，两平行线中距离最近的端点对</li><li><em>Other</em>，不是以上三种类型</li></ul><p><strong><em>Scaffold graph</em></strong> <span class="math inline">\(\mathcal{G_s}=\left(\mathcal{V}_{s}, \mathcal{E}_{s}\right)\)</span>，用于表示和优化脚手架的拓扑结构，包含所有的LPW关系。一开始，LPW关系类型是未知的，我们的目标是准确的提取出它们的LPW关系。</p><p><strong><em>Relation clique</em></strong> 由于incidence或parallel存在传播性，即若{a, b}和{b, c}为LPW中的Incident，则{a, c}也为Incident，Parallel同理。这样 <span class="math inline">\(\mathcal{G_s}\)</span> 中有 Incident or Parallel 关系的组件就形成了一个relation clique (关系圈)，如{a, b, c}。同时，原始的边集并没有包含所有的关系，比如{a, c}，我们把这种由传播关系得到的边作为补充边加入 <span class="math inline">\(\mathcal{G_s}\)</span> 中，如Fig.3a。</p><p><strong><em>Relation clique graph</em></strong> 我们用关系圈图 <span class="math inline">\(\mathcal{G}_{c}=\left(\mathcal{C}_{I} \bigcup \mathcal{C}_{P}, \mathcal{E}_{c}\right)\)</span> 来解决拓扑矛盾，<span class="math inline">\(\mathcal{C}_{I}\)</span> 和 <span class="math inline">\(\mathcal{C}_{P}\)</span> 表示提取出的 incident clique set 和 parallel clique set。在 <span class="math inline">\(\mathcal{G}_{c}\)</span> 中，两个clique的关系通过边来连接，Fig.3b表示了从Fig.3a中推理的来的 relation clique graph。</p><center><img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210326113324.png" style="zoom:82%"></center><center><img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210326113602.png" style="zoom:82%"></center><h4 id="workflow">Workflow</h4><p>预处理阶段，我们通过<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>中的方法检测小洞，并用平面修复。</p><p><strong><em>Automatic phase</em></strong> 绿色部分，首先选出具有正确几何信息的相机最小集，通过简化一个 view redundancy graph，参考<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>。其次，我们自动提取尽可能多的脚手架线，组成脚手架图，优化脚手架拓扑关系(非线性最小二乘问题)，将Mesh网上的边投影至优化后的脚手架线。</p><p><strong><em>Interactive phase</em></strong> 黄色部分，脚手架线通过人工干预不断变多。随着 interactive stage 和 scaffold consolidation 的不断迭代，脚手架不断完善，Mesh网逐渐规则化。</p><center><img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210326113459.png" style="zoom:82%"></center><h3 id="automatic-joint-2d-3d-line-proposal">Automatic Joint 2D-3D Line Proposal</h3><h4 id="view-selection">View Selection</h4><h4 id="accurate-and-coherent-2d-line-extraction">Accurate and Coherent 2D Line Extraction</h4><h4 id="learning-based-line-filtering">Learning-Based Line Filtering</h4><h3 id="surface-scaffold-structure-consolidation">Surface Scaffold Structure Consolidation</h3><h4 id="mesh-line-generation-and-scaffold-line-initialization">Mesh Line Generation and Scaffold Line Initialization</h4><h4 id="scaffold-topology-optimization">Scaffold Topology Optimization</h4><h5 id="energy-function-formulation">Energy Function Formulation</h5><h5 id="energy-minimization">Energy Minimization</h5><h3 id="global-shape-refinement">Global Shape Refinement</h3><h3 id="interactive-structure-driven-scaffolding">Interactive Structure-Driven Scaffolding</h3><h4 id="user-interface">User Interface</h4><h4 id="symmetry-based-scaffold-line-proposal">Symmetry-Based Scaffold Line Proposal</h4><h2 id="结果">结果</h2><center><img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210326113418.png" style="zoom:82%"></center><h2 id="参考文献">参考文献</h2><section class="footnotes" role="doc-endnotes"><hr><ol><li id="fn1" role="doc-endnote"><p>Wang J, Fang T, Su Q, et al. Image-based building regularization using structural linear features[J]. IEEE transactions on visualization and computer graphics, 2015, 22(6): 1760-1772.、<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li><li id="fn2" role="doc-endnote"><p>T. K. Dey, K. Li, and J. Sun, “On computing handle and tunnel loops,” in Proc. Int. Conf. Cyberworlds, 2007, pp. 357–366.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li><li id="fn3" role="doc-endnote"><p>S. Zhu, T. Fang, R. Zhang, and L. Quan, “Multi-view geometry compression,” in Proc. 12th Asian Conf. Comput. Vis., 2015, pp. 3–18.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li></ol></section>]]></content>
+      
+      
+      <categories>
+          
+          <category> 文献研读 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Mesh </tag>
+            
+            <tag> 规则化 </tag>
+            
+            <tag> 线特征 </tag>
+            
+            <tag> 三维重建 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>基于平面的城市三维重建模型规则化(2017)</title>
       <link href="2021/03/19/%E5%9F%BA%E4%BA%8E%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%9F%8E%E5%B8%82%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E6%A8%A1%E5%9E%8B%E8%A7%84%E5%88%99%E5%8C%96-2017/"/>
       <url>2021/03/19/%E5%9F%BA%E4%BA%8E%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%9F%8E%E5%B8%82%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E6%A8%A1%E5%9E%8B%E8%A7%84%E5%88%99%E5%8C%96-2017/</url>
@@ -25,6 +56,8 @@
             <tag> 规则化 </tag>
             
             <tag> 平面感知 </tag>
+            
+            <tag> 曼哈顿 </tag>
             
         </tags>
       
