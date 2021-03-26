@@ -20,13 +20,13 @@
       
         <tags>
             
+            <tag> 三维重建 </tag>
+            
             <tag> Mesh </tag>
             
             <tag> 规则化 </tag>
             
             <tag> 线特征 </tag>
-            
-            <tag> 三维重建 </tag>
             
             <tag> 直线提取 </tag>
             
@@ -304,9 +304,9 @@
       
         <tags>
             
-            <tag> Mesh </tag>
-            
             <tag> 非线性优化 </tag>
+            
+            <tag> Mesh </tag>
             
         </tags>
       
