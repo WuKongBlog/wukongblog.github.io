@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.wukongblog.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
+  </script>
+
+  <meta name="description" content="摘要 本文1提出了一种将体三维重建(volumetric 3D reconstruction)和平面拟合(plane fitting)方法混合的城市三维重建方法，以获得去噪和简洁的场景表示。我们的方法基于一个已经建立的四面体占有率标签(tetrahedral occupancy labeling)方法，同时我们针对城市重建做了改进，增加了其与平面对齐的可能性。更进一步的，我们为其添加了正">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于平面的城市三维重建模型规则化(2017)">
+<meta property="og:url" content="https://www.wukongblog.com/2021/03/19/%E5%9F%BA%E4%BA%8E%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%9F%8E%E5%B8%82%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E6%A8%A1%E5%9E%8B%E8%A7%84%E5%88%99%E5%8C%96-2017/index.html">
+<meta property="og:site_name" content="WuKongBlog">
+<meta property="og:description" content="摘要 本文1提出了一种将体三维重建(volumetric 3D reconstruction)和平面拟合(plane fitting)方法混合的城市三维重建方法，以获得去噪和简洁的场景表示。我们的方法基于一个已经建立的四面体占有率标签(tetrahedral occupancy labeling)方法，同时我们针对城市重建做了改进，增加了其与平面对齐的可能性。更进一步的，我们为其添加了正">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo@master/img/20210408114223.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210325170355.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210325170420.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210325170645.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210325170749.png">
+<meta property="article:published_time" content="2021-03-19T07:00:00.000Z">
+<meta property="article:modified_time" content="2022-06-28T08:40:17.380Z">
+<meta property="article:author" content="Wu Kong">
+<meta property="article:tag" content="Mesh">
+<meta property="article:tag" content="规则化">
+<meta property="article:tag" content="平面感知">
+<meta property="article:tag" content="曼哈顿">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo@master/img/20210408114223.png">
+
+<link rel="canonical" href="https://www.wukongblog.com/2021/03/19/%E5%9F%BA%E4%BA%8E%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%9F%8E%E5%B8%82%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E6%A8%A1%E5%9E%8B%E8%A7%84%E5%88%99%E5%8C%96-2017/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>基于平面的城市三维重建模型规则化(2017) | WuKongBlog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GNGQMJ4BMM"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-GNGQMJ4BMM');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?90241e32c8029a7ce0c7e36ef300a89b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WuKongBlog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.wukongblog.com/2021/03/19/%E5%9F%BA%E4%BA%8E%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%9F%8E%E5%B8%82%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E6%A8%A1%E5%9E%8B%E8%A7%84%E5%88%99%E5%8C%96-2017/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Wu Kong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WuKongBlog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于平面的城市三维重建模型规则化(2017)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-19 15:00:00" itemprop="dateCreated datePublished" datetime="2021-03-19T15:00:00+08:00">2021-03-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-06-28 16:40:17" itemprop="dateModified" datetime="2022-06-28T16:40:17+08:00">2022-06-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%96%87%E7%8C%AE%E7%A0%94%E8%AF%BB/" itemprop="url" rel="index"><span itemprop="name">文献研读</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2021/03/19/%E5%9F%BA%E4%BA%8E%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%9F%8E%E5%B8%82%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E6%A8%A1%E5%9E%8B%E8%A7%84%E5%88%99%E5%8C%96-2017/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2021/03/19/%E5%9F%BA%E4%BA%8E%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%9F%8E%E5%B8%82%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E6%A8%A1%E5%9E%8B%E8%A7%84%E5%88%99%E5%8C%96-2017/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="摘要">摘要</h2>
+<p>本文<a href="#fn1" class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a>提出了一种将体三维重建(<em>volumetric
+3D reconstruction</em>)和平面拟合(<em>plane
+fitting</em>)方法混合的城市三维重建方法，以获得去噪和简洁的场景表示。我们的方法基于一个已经建立的四面体占有率标签(<em>tetrahedral
+occupancy
+labeling</em>)方法，同时我们针对城市重建做了改进，增加了其与平面对齐的可能性。更进一步的，我们为其添加了正则项(<em>regularization
+terms</em>)，使其更偏好曼哈顿式结构，同时我们也添加了用来控制模型的细节层级的数据项。</p>
+<span id="more"></span>
+<center>
+<img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo@master/img/20210408114223.png" style="zoom: 80%;" />
+</center>
+<h2 id="贡献">贡献</h2>
+<ul>
+<li><p>提出了一个统一的三维重建框架，在不显式执行曼哈顿结构，以及用户指定的平滑度和详细程度属性的同时，有利于平面和正交结构</p></li>
+<li><p>方法具有一般性，这使得它非常适合重建任何混合的城市和自然场景，以及室内和室外的场景。</p></li>
+</ul>
+<h2 id="相关工作">相关工作</h2>
+<ul>
+<li><p><strong>基元拟合 Primitive Fitting</strong></p>
+<p>曼哈顿世界假设(<em>Manhattan-world assumption</em>)</p></li>
+<li><p><strong>室内城市重建 Urban Scene Reconstruction</strong></p></li>
+<li><p><strong>室外城市重建 Outdoor Scene
+Reconstruction</strong></p></li>
+<li><p><strong>一般的3D重建方法 Generic 3D Reconstruction
+Approachs</strong></p></li>
+<li><p><strong>混合的3D重建方法 Hybrid 3D Reconstruction
+Approachs</strong></p></li>
+</ul>
+<h2 id="方法概述">方法概述</h2>
+<p>输入点云平面检测完成后，用Delaunay方法将点云分成四面体。与一般的基于四面体的三维重建<a
+href="#fn2" class="footnote-ref" id="fnref2"
+role="doc-noteref"><sup>2</sup></a>类似，我们计算的重建表面为一个四面体内外标记的界面。为了确保检测出的平面为解决方案的一部分，我们通过平面于四面体相交的方式扩充了解空间。同时我们加入了分段平滑项(更偏爱曼哈顿式的结构)和更进一步的数据项(用来控制数据的细节层级LOD)。</p>
+<h3 id="平面检测plane-detection">平面检测(Plane Detection)</h3>
+<ul>
+<li><p>基于RANSAC检测平面</p></li>
+<li><p>每个平面对应一组inlier点(与平面距离小于<span
+class="math inline">\(d_{inlier}\)</span>)，<span
+class="math inline">\(d_{inlier}\)</span>定义为整个点云中点到点最小距离的中位数*5</p></li>
+<li><p>对于每个平面，用MeanShift<a href="#fn3" class="footnote-ref"
+id="fnref3"
+role="doc-noteref"><sup>3</sup></a>方法聚类，这样每个平面又被分割为几个平面部件(<em>plane
+segments</em>)</p></li>
+</ul>
+<h3
+id="基于平面的点云降噪plane-based-point-cloud-denoising">基于平面的点云降噪(Plane-based
+Point Cloud Denoising)</h3>
+<ul>
+<li>我们把与平面距离<span
+class="math inline">\(d_{inlier}\)</span>内的所有点都视为平面的噪声样本</li>
+<li>为了消除这种小噪声，我们将所有inlier点投影到平面上</li>
+<li>这大致上保持了点云的原始点密度，比<a href="#fn4"
+class="footnote-ref" id="fnref4"
+role="doc-noteref"><sup>4</sup></a>中平面的密集过采样更有效，从而使平面成为四面体化的一部分，相比之下，如果有必要，我们将对四面体进行细分</li>
+</ul>
+<h3 id="点云四面体化point-cloud-tetrahedralization">点云四面体化(Point
+Cloud Tetrahedralization)</h3>
+<ul>
+<li>通过Delaunay三角化将点云四面体化</li>
+</ul>
+<h3
+id="四面体占用标签tetrahedra-occupancy-labeling">四面体占用标签(Tetrahedra
+Occupancy Labeling)</h3>
+<p>我们的目标是计算一个水密面作为两个不相交的集合之间的界面，这两个集合将场景中的每个四面体标记为内部或外部。因此，这个表面可以用二值标签{0,1}来完全描述。最终，我们用公式表示为以下最优化问题：</p>
+<p><span class="math display">\[
+\underset{\ell}{\operatorname{minimize}} \quad
+E_{\mathrm{Vis}}(\ell)+\alpha_{\operatorname{Man}}
+E_{\operatorname{Man}}(\ell)+\alpha_{\mathrm{LoD}}
+E_{\mathrm{LoD}}(\ell)
+\]</span></p>
+<p>每一项都偏好不同的属性。 <span
+class="math inline">\(E_{\mathrm{Vis}}\)</span>代表四面面的可见性，<span
+class="math inline">\(E_{\operatorname{Man}}\)</span>
+代表更支持曼哈顿式的结构，<span
+class="math inline">\(E_{\mathrm{LoD}}\)</span>允许做LoD层级调整。我们用图割来求取该问题的全局最优解，下面会详细介绍能量函数中的每一项。</p>
+<h3
+id="基于可见性的代价visibility-based-unary-and-pairwise-costs">基于可见性的代价(Visibility-based
+Unary and Pairwise Costs)</h3>
+<p>对于每个cell和每个face，用影像-像点关系来计算可见性信息，<span
+class="math inline">\(E_{\mathrm{Vis}}\)</span>的定义参考<a href="#fn5"
+class="footnote-ref" id="fnref5"
+role="doc-noteref"><sup>5</sup></a>。</p>
+<ul>
+<li><p>Unary Costs</p>
+<p>每个cell都包含一个相机，每个<em>infinite cell</em> 加<em>infinite
+weight</em>
+标记为outside。对每个点，如果其在某个点后面(从相机看)，标记为inside。因此，在点后的cell得到
+<em>infinite weight</em> 。</p></li>
+<li><p>Pairwise Costs</p>
+<p>因为，面不可能存在于测量点前，所以，每个面若是与相机-物点光线相交，则会得到一个恒定的惩罚权重。</p></li>
+</ul>
+<h3 id="四面体细分tetrahedra-subdivision">四面体细分(Tetrahedra
+Subdivision)</h3>
+<p>之前点云降噪过程得到的平面，并不是四面体必要的一部分，因此我们需要平面和四面体相交，以确保所有的平面都可以被四面体的面表示。对每一条边，如果它与平面部分相交，我们将沿着平面细分所有该边所在的四面体。但简单的将一个四面体分成两部分，不足以维持其邻接关系，所以我们有一套细分策略。细分后的四面体不一定满足Delaunay特性，但是我们在后续步骤中也不需要其保持这个特性。</p>
+<p>因为细分后的四面体本身没有可视性代价，我们需要重新计算。对于 unary
+cost，我们为其分配按四面体体积加权后的原始代价，对于 pairwise
+cost，如果该面是原始面的一部分，按新面的面积加权。对于其他的面，我们按一定的策略进行代价传播，原始四面体中满足与新面夹角足够小的最大面被选中，加权公式<a
+href="#fn6" class="footnote-ref" id="fnref6"
+role="doc-noteref"><sup>6</sup></a>P6。</p>
+<p>通过这种传播方式，unary cost 保持一致，pairwise cost
+从尽可能与新面接近的面传播得到。</p>
+<h3
+id="平面感知的规则化plane-aware-regularization">平面感知的规则化(Plane-Aware
+Regularization)</h3>
+<p>我们引入了一种新的正则项，他允许一个在通用3D重建和预定计划重建按(如曼哈顿式重建)间做出连续选择。</p>
+<ul>
+<li><p>Manhattan Regularity Term</p>
+<p>与<a href="#fn7" class="footnote-ref" id="fnref7"
+role="doc-noteref"><sup>7</sup></a>类似，我们提出了一个偏好正交和平行的结构的规则项。下述项偏好在曼哈顿结构式(相邻面的角度接近0或90°的倍数)进行标签转变:
+<span class="math display">\[
+E_{\operatorname{Man}}(\ell)=\sum_{f \in T}
+\mathbf{1}_{\left\{\ell_{t_{1}} \neq \ell_{t_{2}}\right\}}
+\frac{a_{f}}{3} \sum_{e \in f} \min _{g \in \mathcal{N}_{e}}\{|\sin (2
+\angle(f, g))|\}
+\]</span> 其中，<span class="math inline">\(f\)</span> 表示四面体集合
+<span class="math inline">\(T\)</span> 中的一个面，<span
+class="math inline">\({1}_{\left\{\cdot\right\}}\)</span>
+为指示函数，<span class="math inline">\(\ell_{t_{1}}\)</span> 和 <span
+class="math inline">\(\ell_{t_{2}}\)</span> 是面 <span
+class="math inline">\(f\)</span> 相邻的两个四面体的标签，<span
+class="math inline">\(a_{f}\)</span> 为面 <span
+class="math inline">\(f\)</span> 的面积，<span
+class="math inline">\(e\)</span> 为 <span
+class="math inline">\(f\)</span> 的边，<span
+class="math inline">\(\mathcal{N}_{e}\)</span> 为边 <span
+class="math inline">\(e\)</span>
+所在的所有面。这一项的最大优点即为其更偏好曼哈顿式结构，但其不是严格限定，也允许任何的表面类型。此外，这一项完全为局部操作，不需要与世界坐标系的任意一个轴平行。</p></li>
+<li><p>Level of Detail Term</p>
+<p>为了控制因曼哈顿项去除的细节数量，以及对预先检测出的平面的偏好，我们提出了另外一项，用来控制删除的结构数量。例如，我们想去除建筑屋顶上的噪声，但是想保留烟囱。为了达到这个目的，这一项会对与不加入正则项重建的模型之间的偏差进行惩罚。原始的，没有平面感知的3D重建可以用
+<span class="math inline">\(\ell^{\text {Labatut }}=\arg \min
+_{\ell}\left[E_{\mathrm{Vis}}(\ell)\right]\)</span>
+来表达。因此，通过衡量两种模型间的体积差，定义如下项： <span
+class="math display">\[
+E_{\mathrm{LoD}}(\ell)=\sum_{t \in T} v_{t} \mathbf{1}_{\left\{\ell_{t}
+\neq \ell_{t}^{\mathrm{Labatut}}\right\}}
+\]</span> 其中，<span class="math inline">\(t\)</span> 为四面体集合
+<span class="math inline">\(T\)</span> 中的一个四面体，<span
+class="math inline">\({1}_{\left\{\cdot\right\}}\)</span>
+为指示函数，<span class="math inline">\(\ell_{t_{1}}\)</span> 为四面体
+<span class="math inline">\(t\)</span> 的标签，<span
+class="math inline">\(v_{t}\)</span> 为四面体 <span
+class="math inline">\(t\)</span> 的体积。这一项与曼哈顿规则项相对:
+曼哈顿规则项删除任何平面都不支持的细节，这一项允许控制控制要删除的细节数量。</p></li>
+<li><p>Plane Intersection Artifacts Removal</p>
+<p>多数情况下，以上两项就够了，但是人工建筑可能会引起近平面的相交，多沿着场景中的锐边(像建筑物的轮廓)。噪声可能会导致Cell
+中包含unary cost
+投票为inside，但是实际上为outside的情况。为了避免这种人造建筑，我们在平面相交处的附近降低了unary
+和 pairwise
+cost的影响。对于每个四面体，如果其中心点与平面相交处的距离小于<span
+class="math inline">\(3d_{inlier}\)</span> ，则将其代价按以下公式更新：
+<span class="math display">\[
+E(t)=E_{\text {orig }}(t)\left(1-\exp \left(\frac{-d^{2}}{3 d_{\text
+{inlier }}^{2}}\right)\right)
+\]</span> 其中，<span class="math inline">\(E_{\text {orig
+}}(t)\)</span> 为原始四面体的代价。</p></li>
+</ul>
+<h2 id="结果">结果</h2>
+<center>
+<img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210325170355.png" style="zoom: 80%;"/>
+</center>
+<center>
+<img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210325170420.png" style="zoom: 85%;"/>
+</center>
+<center>
+<img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210325170645.png" style="zoom: 82%;"/>
+</center>
+<center>
+<img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/20210325170749.png" style="zoom: 80%;"/>
+</center>
+<h2 id="参考文献">参考文献</h2>
+<section class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Holzmann T, Oswald M R, Pollefeys M,
+et al. Plane-based surface regularization for urban 3d
+construction[C]//Proceedings 28th British Machine Vision Conference,
+2017 (BMVC). 2017: 1-9.<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>Patrick Labatut, Jean-Philippe Pons,
+and Renaud Keriven. Robust and efficient surface reconstruction from
+range data. Computer Graphics Forum, pages 2275–2290, December 2009.<a
+href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>Dorin Comaniciu and Peter Meer. Mean
+shift: A robust approach toward feature space analysis. IEEE
+Transactions on Pattern Analysis and Machine Intelligence,
+24(5):603–619, 2002.<a href="#fnref3" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>Florent Lafarge and Pierre Alliez.
+Surface reconstruction through point set structuring. Comput. Graph.
+Forum, 32(2):225–234, 2013.<a href="#fnref4" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>Patrick Labatut, Jean-Philippe Pons,
+and Renaud Keriven. Efficient multi-view reconstruction of large-scale
+scenes using interest points, delaunay triangulation and graph cuts. In
+Proceedings International Conference on Computer Vision, 2007.<a
+href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>Holzmann T, Oswald M R, Pollefeys M,
+et al. Plane-based surface regularization for urban 3d
+construction[C]//Proceedings 28th British Machine Vision Conference,
+2017 (BMVC). 2017: 1-9.<a href="#fnref6" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+<li id="fn7" role="doc-endnote"><p>Florent Lafarge, Renaud Keriven,
+Mathieu Brédif, and Hoang-Hiep Vu. A hybrid multiview stereo algorithm
+for modeling urban scenes. IEEE Trans. Pattern Anal. Mach. Intell.,
+35(1):5–17, 2013.<a href="#fnref7" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wu Kong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.wukongblog.com/2021/03/19/%E5%9F%BA%E4%BA%8E%E5%B9%B3%E9%9D%A2%E7%9A%84%E5%9F%8E%E5%B8%82%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E6%A8%A1%E5%9E%8B%E8%A7%84%E5%88%99%E5%8C%96-2017/" title="基于平面的城市三维重建模型规则化(2017)">https://www.wukongblog.com/2021/03/19/基于平面的城市三维重建模型规则化-2017/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Mesh/" rel="tag"># Mesh</a>
+              <a href="/tags/%E8%A7%84%E5%88%99%E5%8C%96/" rel="tag"># 规则化</a>
+              <a href="/tags/%E5%B9%B3%E9%9D%A2%E6%84%9F%E7%9F%A5/" rel="tag"># 平面感知</a>
+              <a href="/tags/%E6%9B%BC%E5%93%88%E9%A1%BF/" rel="tag"># 曼哈顿</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/16/%E7%BB%93%E6%9E%84%E6%84%9F%E7%9F%A5%E7%9A%84%E5%BB%BA%E7%AD%91Mesh%E7%BD%91%E5%A4%9A%E8%BE%B9%E5%BD%A2%E5%8C%96-2020/" rel="prev" title="结构感知的建筑Mesh网多边形化(2020)">
+      <i class="fa fa-chevron-left"></i> 结构感知的建筑Mesh网多边形化(2020)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/03/26/%E5%9F%BA%E4%BA%8E%E5%BD%B1%E5%83%8F%E7%BB%93%E6%9E%84%E7%BA%BF%E7%89%B9%E5%BE%81%E7%9A%84%E5%BB%BA%E7%AD%91%E8%A7%84%E5%88%99%E5%8C%96-2016/" rel="next" title="基于影像结构线特征的建筑规则化(2016)">
+      基于影像结构线特征的建筑规则化(2016) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%A1%E7%8C%AE"><span class="nav-number">2.</span> <span class="nav-text">贡献</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">相关工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E6%A6%82%E8%BF%B0"><span class="nav-number">4.</span> <span class="nav-text">方法概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B3%E9%9D%A2%E6%A3%80%E6%B5%8Bplane-detection"><span class="nav-number">4.1.</span> <span class="nav-text">平面检测(Plane Detection)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%B9%B3%E9%9D%A2%E7%9A%84%E7%82%B9%E4%BA%91%E9%99%8D%E5%99%AAplane-based-point-cloud-denoising"><span class="nav-number">4.2.</span> <span class="nav-text">基于平面的点云降噪(Plane-based
+Point Cloud Denoising)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%B9%E4%BA%91%E5%9B%9B%E9%9D%A2%E4%BD%93%E5%8C%96point-cloud-tetrahedralization"><span class="nav-number">4.3.</span> <span class="nav-text">点云四面体化(Point
+Cloud Tetrahedralization)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E9%9D%A2%E4%BD%93%E5%8D%A0%E7%94%A8%E6%A0%87%E7%AD%BEtetrahedra-occupancy-labeling"><span class="nav-number">4.4.</span> <span class="nav-text">四面体占用标签(Tetrahedra
+Occupancy Labeling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%8F%AF%E8%A7%81%E6%80%A7%E7%9A%84%E4%BB%A3%E4%BB%B7visibility-based-unary-and-pairwise-costs"><span class="nav-number">4.5.</span> <span class="nav-text">基于可见性的代价(Visibility-based
+Unary and Pairwise Costs)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E9%9D%A2%E4%BD%93%E7%BB%86%E5%88%86tetrahedra-subdivision"><span class="nav-number">4.6.</span> <span class="nav-text">四面体细分(Tetrahedra
+Subdivision)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B3%E9%9D%A2%E6%84%9F%E7%9F%A5%E7%9A%84%E8%A7%84%E5%88%99%E5%8C%96plane-aware-regularization"><span class="nav-number">4.7.</span> <span class="nav-text">平面感知的规则化(Plane-Aware
+Regularization)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-number">5.</span> <span class="nav-text">结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wu Kong"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Wu Kong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wongshek" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wongshek" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wong.shek@outlook.com" title="E-Mail → mailto:wong.shek@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/u/5346122625" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;u&#x2F;5346122625" rel="noopener" target="_blank"><i class="fab fa-weibo fa-fw"></i>Weibo</a>
+      </span>
+  </div>
+
+
+
+
+<div class="links-of-blogroll motion-element">
+	<p id="hitokoto" style="padding: 0; margin: 0;">:D 获取中...</p>
+	<p id="hitofrom" style="text-align: right; padding: 0; margin: 0;">:D 获取中...</p>
+	<script>
+        fetch('https://v1.hitokoto.cn/?c=i')
+        .then(response => response.json())
+        .then(data => {
+            const hitokoto = document.getElementById('hitokoto')
+            const hitofrom = document.getElementById('hitofrom')
+            hitokoto.innerText = data.hitokoto
+            hitofrom.innerText = '——' + data.from
+        })
+        .catch(console.error)
+	</script>
+</div>
+
+<div class="revolver-maps">
+	<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5ttrp7ce0jk&amp;m=6&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33" async="async"></script>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">  Wu Kong</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+
+
+<script>
+fetch('https://v1.hitokoto.cn/?c=d')
+    .then(response => response.json())
+    .then(data => {
+      const hitokoto = document.getElementById('hitokoto')
+      const from = document.getElementById('from')
+      const myText = data.hitokoto + '  《' + data.from + '》'
+      myLoadValineComments(myText)
+    })
+    
+function myLoadValineComments(myText)
+{
+  NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+    NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+      var GUEST = ['nick', 'mail', 'link'];
+      var guest = 'nick,mail,link';
+      guest = guest.split(',').filter(item => {
+        return GUEST.includes(item);
+      });
+      new Valine({
+        el         : '#valine-comments',
+        verify     : true,
+        notify     : false,
+        appId      : 'fnpNoJhagPcCVo45A9v7M0fy-gzGzoHsz',
+        appKey     : 'tRUiOgdeqd9QDSxfxXYNhEv1',
+        placeholder: myText, 
+        avatar     : 'robohash',
+        meta       : guest,
+        pageSize   : '10' || 10,
+        visitor    : false,
+        lang       : '' || 'zh-cn',
+        path       : location.pathname,
+        recordIP   : false,
+        serverURLs : ''
+      });
+    }, window.Valine);
+  });
+}
+
+</script>
+
+</body>
+</html>
