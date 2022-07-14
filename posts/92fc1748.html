@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.2">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.wukongblog.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
+  </script>
+
+  <meta name="description" content="之前一直搞不清公式里各种 \(t\) 的实际含义，最近仔细推导了一遍，记录一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="相对定向中的tij到底是什么">
+<meta property="og:url" content="https://www.wukongblog.com/posts/92fc1748.html">
+<meta property="og:site_name" content="WuKongBlog">
+<meta property="og:description" content="之前一直搞不清公式里各种 \(t\) 的实际含义，最近仔细推导了一遍，记录一下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-02T08:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-14T08:16:23.832Z">
+<meta property="article:author" content="Wu Kong">
+<meta property="article:tag" content="摄影测量">
+<meta property="article:tag" content="计算机视觉">
+<meta property="article:tag" content="相对定向">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.wukongblog.com/posts/92fc1748.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>相对定向中的tij到底是什么 | WuKongBlog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GNGQMJ4BMM"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-GNGQMJ4BMM');
+      }
+    </script>
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?90241e32c8029a7ce0c7e36ef300a89b";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WuKongBlog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.wukongblog.com/posts/92fc1748.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Wu Kong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WuKongBlog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          相对定向中的tij到底是什么
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-02 16:00:00" itemprop="dateCreated datePublished" datetime="2021-04-02T16:00:00+08:00">2021-04-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-07-14 16:16:23" itemprop="dateModified" datetime="2022-07-14T16:16:23+08:00">2022-07-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" itemprop="url" rel="index"><span itemprop="name">基础知识</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/posts/92fc1748.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/92fc1748.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>之前一直搞不清公式里各种 <span class="math inline">\(t\)</span>
+的实际含义，最近仔细推导了一遍，记录一下。<span id="more"></span></p>
+<h2 id="基本公式">基本公式</h2>
+<ul>
+<li><p>世界坐标系 -&gt; 相机坐标系 <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}X_c\\Y_c\\Z_c \end{bmatrix}
+=
+R\cdot
+\begin{bmatrix}X_w\\Y_w\\Z_w\end{bmatrix}
++t
+\end{equation}
+\]</span> 写成齐次化的形式： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}X_c\\Y_c\\Z_c\\1 \end{bmatrix}
+=
+\begin{bmatrix}
+R&amp;t\\
+0&amp;1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}X_w\\Y_w\\Z_w\\1\end{bmatrix}
+\end{equation}
+\]</span> 其中 <span class="math inline">\(R\)</span> 为 <em>global
+rotation matrix</em> 全局旋转矩阵，<span
+class="math inline">\(t\)</span> 为 <em>global translation</em>
+全局平移量。这里的 <span class="math inline">\(R\)</span>
+很好理解，其将世界坐标系旋转到了相机坐标系下，而 <span
+class="math inline">\(t\)</span>
+的含义为：<strong>相机坐标系下世界坐标系原点的位置</strong>，比较难懂。怎么理解呢，可以脑补一下，由于
+<span class="math inline">\(R\)</span>
+正交矩阵的性质，坐标系旋转时，原点位置不变，向量长度不变，也就是旋转后的世界坐标系和相机坐标系完全平行，只差一个平移量
+<span
+class="math inline">\(t\)</span>，这个平移量就是相机坐标系下世界坐标系原点的坐标。</p>
+<p>摄影测量中外方位元素中的线元素，我们通常用 <span
+class="math inline">\(C\)</span>
+来表示，其含义为：<strong>世界坐标系下相机坐标系原点的位置，也就是世界坐标系下相机的位置</strong>。
+这样一来，两者的转换公式也就一目了然： <span class="math display">\[
+\begin{equation}
+t=-R\cdot C
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+  C=-R^T\cdot t
+\end{equation}
+\]</span></p></li>
+<li><p>相机坐标系 -&gt; 相机坐标系 <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}X_j\\ Y_j\\ Z_j \end{bmatrix} =
+R_{ij}\cdot \begin{bmatrix}X_i\\ Y_i\\ Z_i \end{bmatrix}+
+t_{ij}
+\end{equation}
+\]</span> 写成齐次化的形式： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}X_j\\ Y_j\\ Z_j\\1 \end{bmatrix} =
+\begin{bmatrix}
+R_{ij}&amp;t_{ij}\\
+0&amp;1
+\end{bmatrix}
+\cdot \begin{bmatrix}X_i\\ Y_i\\ Z_i\\1 \end{bmatrix}
+\end{equation}
+\]</span> 其中 <span class="math inline">\(R_{ij}\)</span> 为
+<em>relative rotation matrix</em> 相对旋转矩阵，<span
+class="math inline">\(t_{ij}\)</span> 为 <em>relative translation</em>
+相对平移量。和世界坐标系 -&gt; 相机坐标系类似，<span
+class="math inline">\(R_{ij}\)</span> 表示将 <span
+class="math inline">\(i\)</span> 坐标系旋转至 <span
+class="math inline">\(j\)</span> 坐标系，<span
+class="math inline">\(t_{ij}\)</span> 表示 <span
+class="math inline">\(j\)</span> <strong>相机坐标系下</strong> <span
+class="math inline">\(i\)</span>
+<strong>相机坐标系原点的位置</strong>。</p>
+<p>同样的，我们常说的相对定向线元素 <span
+class="math inline">\(C_{ij}\)</span> 表示 <span
+class="math inline">\(i\)</span> <strong>相机坐标系下</strong> <span
+class="math inline">\(j\)</span>
+<strong>相机坐标系原点的位置</strong>。两者的转换公式为： <span
+class="math display">\[
+\begin{equation}
+t_{ij}=-R_{ij}\cdot C_{ij}
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+C_{ij}=-R_{ij}^T\cdot t_{ij}
+\end{equation}
+\]</span> 那么 <span class="math inline">\(R_{ij}\)</span> 和 <span
+class="math inline">\(t_{ij}\)</span>
+怎么通过全局旋转平移量来表达呢？</p></li>
+</ul>
+<h2 id="相对定向元素">相对定向元素</h2>
+<p>有了公式(6)后，我们将两张影像 <span
+class="math inline">\(i,j\)</span> 与物方关系的方程写出： <span
+class="math display">\[
+\begin{equation}
+\begin{bmatrix}X_i\\Y_i\\Z_i\\1 \end{bmatrix}
+=
+\begin{bmatrix}
+R_{i}&amp;t_{i}\\
+0&amp;1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}X_w\\Y_w\\Z_w\\1\end{bmatrix}
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+\begin{bmatrix}X_j\\Y_j\\Z_j\\1\end{bmatrix}
+=\begin{bmatrix}
+R_{j}&amp;t_{j}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}X_w\\Y_w\\Z_w\\1\end{bmatrix}
+\end{equation}
+\]</span></p>
+<p>将公式(9)(10)代入公式(6)中得到： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}
+R_{j}&amp;t_{j}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}X_w\\Y_w\\Z_w\\1\end{bmatrix}
+=\begin{bmatrix}
+R_{ij}&amp;t_{ij}\\
+0&amp;1
+\end{bmatrix}
+\cdot \begin{bmatrix}
+R_{i}&amp;t_{i}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}X_w\\Y_w\\Z_w\\1\end{bmatrix}
+\end{equation}
+\]</span></p>
+<p>物方点坐标相同，消掉后： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}
+R_{j}&amp;t_{j}\\
+0&amp;1
+\end{bmatrix}
+=\begin{bmatrix}
+R_{ij}&amp;t_{ij}\\
+0&amp;1
+\end{bmatrix}
+\cdot \begin{bmatrix}
+R_{i}&amp;t_{i}\\
+0&amp;1
+\end{bmatrix}
+\end{equation}
+\]</span> 将等号右边乘开： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}
+R_{j}&amp;t_{j}\\
+0&amp;1
+\end{bmatrix}
+=\begin{bmatrix}
+R_{ij}\cdot R_i &amp; R_{ij}\cdot t_i+t_{ij}\\
+0&amp;1
+\end{bmatrix}
+\end{equation}
+\]</span> 这样就得到了相对定向元素与全局旋转平移量的关系： <span
+class="math display">\[
+\begin{equation}
+R_j=R_{ij}\cdot R_i
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+t_j = R_{ij}\cdot t_i+t_{ij}
+\end{equation}
+\]</span> 即： <span class="math display">\[
+\begin{equation}
+R_{ij}=R_{j}\cdot R_i^T
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+t_{ij}=t_{j}-R_{ij}\cdot t_i
+\end{equation}
+\]</span> 考虑 <span class="math inline">\(t_{ij}\)</span> 尺度影响：
+<span class="math display">\[
+\begin{equation}
+s\cdot t_{ij}=t_{j}-R_{ij}\cdot t_i
+\end{equation}
+\]</span></p>
+<h2 id="应用">应用</h2>
+<h3 id="使用gps坐标做全局线元素初值">使用GPS坐标做全局线元素初值</h3>
+<p>我们认为当前的全局坐标系与GPS坐标系只差了一个旋转关系，则有： <span
+class="math display">\[
+\begin{equation}
+R_{gps}=R_{glo2gps}\cdot R_{global}
+\end{equation}
+\]</span></p>
+<p><span class="math inline">\(R_{glo2gps}\)</span>
+可以通过两两相机间的向量求解，写出GPS坐标系 -&gt; 相机坐标系的关系：
+<span class="math display">\[
+\begin{equation}
+\begin{bmatrix}X_i\\Y_i\\Z_i\\1 \end{bmatrix}
+=
+\begin{bmatrix}
+R_{gps_i}&amp;t_{gps_i}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}X_{gps}\\Y_{gps}\\Z_{gps}\\1\end{bmatrix}
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+\begin{bmatrix}X_j\\Y_j\\Z_j\\1 \end{bmatrix}
+=
+\begin{bmatrix}
+R_{gps_j}&amp;t_{gps_j}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}X_{gps}\\Y_{gps}\\Z_{gps}\\1\end{bmatrix}
+\end{equation}
+\]</span></p>
+<p>将以上两个公式代入公式(6)中： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}
+R_{gps_j}&amp;t_{gps_j}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}X_{gps}\\Y_{gps}\\Z_{gps}\\1\end{bmatrix}=
+\begin{bmatrix}
+R_{ij}&amp;t_{ij}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}
+R_{gps_i}&amp;t_{gps_i}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}X_{gps}\\Y_{gps}\\Z_{gps}\\1\end{bmatrix}
+\end{equation}
+\]</span></p>
+<p>物方点坐标相同，消掉后： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}
+R_{gps_j}&amp;t_{gps_j}\\
+0&amp;1
+\end{bmatrix}=
+\begin{bmatrix}
+R_{ij}&amp;t_{ij}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}
+R_{gps_i}&amp;t_{gps_i}\\
+0&amp;1
+\end{bmatrix}
+\end{equation}
+\]</span></p>
+<p>即： <span class="math display">\[
+\begin{equation}
+R_{gps_j}=R_{ij}\cdot R_{gps_i}
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+t_{gps_j}=R_{ij}\cdot t_{gps_i}+t_{ij}
+\end{equation}
+\]</span></p>
+<p>可以看出，方程的基本形式没有变化，这里要注意，全局坐标系的旋转不影响相对定向中
+<span class="math inline">\(R_{ij}\)</span> 和 <span
+class="math inline">\(t_{ij}\)</span>
+的数值，可以从它们的实际意义去思考一下。</p>
+<h3 id="arcore坐标系转真实世界坐标系">ARCore坐标系转真实世界坐标系</h3>
+<p>之前我们遇到的问题都是物方坐标相同，求两个相机坐标系之间的关系，这个问题是相机坐标系相同，求两个世界坐标系之间的关系。ARCore的世界坐标系(记为Local)为开启软件一瞬间的手机位置，我们想把它转为我们自定义的世界坐标系(记为Global)以实现室内定位。</p>
+<p>我们现有的数据为：</p>
+<ul>
+<li>Local坐标系 -&gt; 相机坐标系的 <span
+class="math inline">\(R_{L}\)</span> 和 <span
+class="math inline">\(t_{L}\)</span></li>
+<li>Global坐标系 -&gt; 相机坐标系的<span
+class="math inline">\(R_G\)</span> 和 <span
+class="math inline">\(t_G\)</span></li>
+</ul>
+<p>待求的值为：</p>
+<ul>
+<li>Local坐标系 -&gt; Global坐标系的 <span
+class="math inline">\(R_{LG}\)</span> 和 <span
+class="math inline">\(t_{LG}\)</span></li>
+</ul>
+<p>先写出两世界坐标系转换的方程： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}X_G\\ Y_G\\ Z_G\\1 \end{bmatrix} =
+\begin{bmatrix}R_{LG}&amp;t_{LG}\\0&amp;1\end{bmatrix}\cdot
+\begin{bmatrix}X_L\\ Y_L\\ Z_L\\1 \end{bmatrix}
+\end{equation}
+\]</span> 再写出两个世界坐标系转相机坐标系的方程： <span
+class="math display">\[
+\begin{equation}
+\begin{bmatrix}X^{&#39;}\\Y^{&#39;}\\Z^{&#39;}\\1 \end{bmatrix}
+=
+\begin{bmatrix}
+R_{L}&amp;t_{L}\\
+0&amp;1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}X_L\\Y_L\\Z_L\\1\end{bmatrix}
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+\begin{bmatrix}X^{&#39;}\\Y^{&#39;}\\Z^{&#39;}\\1 \end{bmatrix}
+=
+\begin{bmatrix}
+R_{G}&amp;t_{G}\\
+0&amp;1
+\end{bmatrix}
+\cdot
+\begin{bmatrix}X_G\\Y_G\\Z_G\\1\end{bmatrix}
+\end{equation}
+\]</span></p>
+<p>和上文一样，代入后得到： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}
+R_{G}&amp;t_{G}\\
+0&amp;1
+\end{bmatrix}^{\text{-1}}\cdot
+\begin{bmatrix}X^{&#39;}\\Y^{&#39;}\\Z^{&#39;}\\1 \end{bmatrix}
+=
+\begin{bmatrix}
+R_{LG}&amp;t_{LG}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}
+R_{L}&amp;t_{L}\\
+0&amp;1
+\end{bmatrix}^{\text{-1}}\cdot
+\begin{bmatrix}X^{&#39;}\\Y^{&#39;}\\Z^{&#39;}\\1 \end{bmatrix}
+\end{equation}
+\]</span> 相机坐标系相同，消掉后： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}
+R_{G}&amp;t_{G}\\
+0&amp;1
+\end{bmatrix}^{\text{-1}}
+=
+\begin{bmatrix}
+R_{LG}&amp;t_{LG}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}
+R_{L}&amp;t_{L}\\
+0&amp;1
+\end{bmatrix}^{\text{-1}}
+\end{equation}
+\]</span> 即： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}
+R_{L}&amp;t_{L}\\
+0&amp;1
+\end{bmatrix}
+=
+\begin{bmatrix}
+R_{G}&amp;t_{G}\\
+0&amp;1
+\end{bmatrix}\cdot
+\begin{bmatrix}
+R_{LG}&amp;t_{LG}\\
+0&amp;1
+\end{bmatrix}
+\end{equation}
+\]</span> 乘开： <span class="math display">\[
+\begin{equation}
+\begin{bmatrix}
+R_{L}&amp;t_{L}\\
+0&amp;1
+\end{bmatrix}
+=
+\begin{bmatrix}
+R_{G}\cdot R_{LG}&amp;R_{G}\cdot t_{LG}+t_{G}\\
+0&amp;1
+\end{bmatrix}
+\end{equation}
+\]</span> 得到： <span class="math display">\[
+\begin{equation}
+R_{LG}=R_G^T\cdot R_L
+\end{equation}
+\]</span></p>
+<p><span class="math display">\[
+\begin{equation}
+t_{LG}=R_G^T\cdot (t_L-t_G)
+\end{equation}
+\]</span></p>
+<h2 id="小结">小结</h2>
+<ol type="1">
+<li><p>markdown+latex写公式很nice</p></li>
+<li><p>感受到了公式齐次化的优美与强大之处:D​</p></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Wu Kong
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://www.wukongblog.com/posts/92fc1748.html" title="相对定向中的tij到底是什么">https://www.wukongblog.com/posts/92fc1748.html</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%91%84%E5%BD%B1%E6%B5%8B%E9%87%8F/" rel="tag"># 摄影测量</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" rel="tag"># 计算机视觉</a>
+              <a href="/tags/%E7%9B%B8%E5%AF%B9%E5%AE%9A%E5%90%91/" rel="tag"># 相对定向</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/3d39ce11.html" rel="prev" title="C++抓取摄像头实时图像">
+      <i class="fa fa-chevron-left"></i> C++抓取摄像头实时图像
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/d21b54ef.html" rel="next" title="三维重建流程(总结)">
+      三维重建流程(总结) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%85%AC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">基本公式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%AF%B9%E5%AE%9A%E5%90%91%E5%85%83%E7%B4%A0"><span class="nav-number">2.</span> <span class="nav-text">相对定向元素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8gps%E5%9D%90%E6%A0%87%E5%81%9A%E5%85%A8%E5%B1%80%E7%BA%BF%E5%85%83%E7%B4%A0%E5%88%9D%E5%80%BC"><span class="nav-number">3.1.</span> <span class="nav-text">使用GPS坐标做全局线元素初值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#arcore%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E7%9C%9F%E5%AE%9E%E4%B8%96%E7%95%8C%E5%9D%90%E6%A0%87%E7%B3%BB"><span class="nav-number">3.2.</span> <span class="nav-text">ARCore坐标系转真实世界坐标系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wu Kong"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Wu Kong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wongshek" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wongshek" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:wong.shek@outlook.com" title="E-Mail → mailto:wong.shek@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/wechat.jpg" title="WeChat → https:&#x2F;&#x2F;cdn.jsdelivr.net&#x2F;gh&#x2F;WuKongBlog&#x2F;PicGo&#x2F;img&#x2F;wechat.jpg" rel="noopener" target="_blank"><i class="fab fa-weixin fa-fw"></i>WeChat</a>
+      </span>
+  </div>
+
+
+
+
+<div class="links-of-blogroll motion-element">
+	<p id="hitokoto" style="padding: 0; margin: 0;">:D 获取中...</p>
+	<p id="hitofrom" style="text-align: right; padding: 0; margin: 0;">:D 获取中...</p>
+	<script>
+        fetch('https://v1.hitokoto.cn/?c=i')
+        .then(response => response.json())
+        .then(data => {
+            const hitokoto = document.getElementById('hitokoto')
+            const hitofrom = document.getElementById('hitofrom')
+            hitokoto.innerText = data.hitokoto
+            hitofrom.innerText = '——' + data.from
+        })
+        .catch(console.error)
+	</script>
+</div>
+
+<div class="revolver-maps">
+	<script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?i=5ttrp7ce0jk&amp;m=6&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33" async="async"></script>
+</div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">  Wu Kong</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+
+
+
+<script>
+fetch('https://v1.hitokoto.cn/?c=d')
+    .then(response => response.json())
+    .then(data => {
+      const hitokoto = document.getElementById('hitokoto')
+      const from = document.getElementById('from')
+      const myText = data.hitokoto + '  《' + data.from + '》'
+      myLoadValineComments(myText)
+    })
+    
+function myLoadValineComments(myText)
+{
+  NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+    NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+      var GUEST = ['nick', 'mail', 'link'];
+      var guest = 'nick,mail,link';
+      guest = guest.split(',').filter(item => {
+        return GUEST.includes(item);
+      });
+      new Valine({
+        el         : '#valine-comments',
+        verify     : true,
+        notify     : false,
+        appId      : 'fnpNoJhagPcCVo45A9v7M0fy-gzGzoHsz',
+        appKey     : 'tRUiOgdeqd9QDSxfxXYNhEv1',
+        placeholder: myText, 
+        avatar     : 'robohash',
+        meta       : guest,
+        pageSize   : '10' || 10,
+        visitor    : false,
+        lang       : '' || 'zh-cn',
+        path       : location.pathname,
+        recordIP   : false,
+        serverURLs : ''
+      });
+    }, window.Valine);
+  });
+}
+
+</script>
+
+</body>
+</html>
