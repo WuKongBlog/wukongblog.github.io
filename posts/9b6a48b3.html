@@ -20,22 +20,27 @@
     var CONFIG = {"hostname":"www.wukongblog.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"./public/search.xml"};
   </script>
 
-  <meta name="description" content="总结了一下 Visual Studio 最最最有用的快捷键，下文中的 * 是指按快捷键时光标放在当前行任意位置即可，无需选中，熟悉了这个操作可以大大提高效率。">
+  <meta name="description" content="项目简述 依据平面假设将建筑原始模型自动重建为简洁多边形网格：基于MRF对三维场景进行语义分割后对建筑物进行快速平面引导分割，依据先验知识提取房屋立面和屋顶等组件并优化其几何位置，构建组件间拓扑连接关系并针对典型建筑结构例如薄板、女儿墙进行拓扑优化，组件平面相交生成候选面并进行选择完成重建。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="VS快捷键集合">
-<meta property="og:url" content="https://www.wukongblog.com/posts/4f174e2f.html">
+<meta property="og:title" content="建筑物自动化结构重建">
+<meta property="og:url" content="https://www.wukongblog.com/posts/9b6a48b3.html">
 <meta property="og:site_name" content="WuKongBlog">
-<meta property="og:description" content="总结了一下 Visual Studio 最最最有用的快捷键，下文中的 * 是指按快捷键时光标放在当前行任意位置即可，无需选中，熟悉了这个操作可以大大提高效率。">
+<meta property="og:description" content="项目简述 依据平面假设将建筑原始模型自动重建为简洁多边形网格：基于MRF对三维场景进行语义分割后对建筑物进行快速平面引导分割，依据先验知识提取房屋立面和屋顶等组件并优化其几何位置，构建组件间拓扑连接关系并针对典型建筑结构例如薄板、女儿墙进行拓扑优化，组件平面相交生成候选面并进行选择完成重建。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-09-11T07:00:00.000Z">
-<meta property="article:modified_time" content="2022-07-14T08:16:23.789Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/auto-nanyang.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/planeseg.result.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/topo-optim.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/auto-recons-result.drawio.png">
+<meta property="article:published_time" content="2022-03-02T09:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-20T08:46:49.704Z">
 <meta property="article:author" content="Wu Kong">
-<meta property="article:tag" content="C++">
-<meta property="article:tag" content="visual studio">
-<meta property="article:tag" content="快捷键">
+<meta property="article:tag" content="计算机视觉">
+<meta property="article:tag" content="计算机图形学">
+<meta property="article:tag" content="单体化">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/auto-nanyang.png">
 
-<link rel="canonical" href="https://www.wukongblog.com/posts/4f174e2f.html">
+<link rel="canonical" href="https://www.wukongblog.com/posts/9b6a48b3.html">
 
 
 <script id="page-configurations">
@@ -48,7 +53,7 @@
   };
 </script>
 
-  <title>VS快捷键集合 | WuKongBlog</title>
+  <title>建筑物自动化结构重建 | WuKongBlog</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GNGQMJ4BMM"></script>
     <script>
@@ -214,7 +219,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.wukongblog.com/posts/4f174e2f.html">
+    <link itemprop="mainEntityOfPage" href="https://www.wukongblog.com/posts/9b6a48b3.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -227,7 +232,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          VS快捷键集合
+          建筑物自动化结构重建
         </h1>
 
         <div class="post-meta">
@@ -237,14 +242,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2021-09-11 15:00:00" itemprop="dateCreated datePublished" datetime="2021-09-11T15:00:00+08:00">2021-09-11</time>
+              <time title="创建时间：2022-03-02 17:00:00" itemprop="dateCreated datePublished" datetime="2022-03-02T17:00:00+08:00">2022-03-02</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-07-14 16:16:23" itemprop="dateModified" datetime="2022-07-14T16:16:23+08:00">2022-07-14</time>
+                <time title="修改时间：2022-07-20 16:46:49" itemprop="dateModified" datetime="2022-07-20T16:46:49+08:00">2022-07-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -252,7 +257,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%A5%87%E6%8A%80%E6%B7%AB%E5%B7%A7/" itemprop="url" rel="index"><span itemprop="name">奇技淫巧</span></a>
+                  <a href="/categories/%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" itemprop="url" rel="index"><span itemprop="name">项目总结</span></a>
                 </span>
             </span>
 
@@ -272,8 +277,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/posts/4f174e2f.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/posts/4f174e2f.html" itemprop="commentCount"></span>
+    <a title="valine" href="/posts/9b6a48b3.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/posts/9b6a48b3.html" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -288,258 +293,35 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>总结了一下 Visual Studio 最最最有用的快捷键，下文中的 *
-是指按快捷键时光标放在当前行任意位置即可，无需选中，熟悉了这个操作可以大大提高效率。</p>
-<span id="more"></span>
-<h2 id="复制粘贴">复制粘贴</h2>
-<p>复制粘贴作为程序猿的第一要义，要把它的快捷键用的滚瓜烂熟才行</p>
-<table>
-<thead>
-<tr class="header">
-<th>按键</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Ctrl + D</td>
-<td>原地复制粘贴当前行*</td>
-</tr>
-<tr class="even">
-<td>Ctrl + C</td>
-<td>复制当前行*</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + V</td>
-<td>粘贴到上一行*</td>
-</tr>
-<tr class="even">
-<td>Ctrl + X</td>
-<td>剪切当前行*</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + Z</td>
-<td>撤销操作</td>
-</tr>
-<tr class="even">
-<td>Ctrl + Shift + L</td>
-<td>删除当前行*</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + Shift + V</td>
-<td>打开vs剪贴板</td>
-</tr>
-<tr class="even">
-<td>Win + V</td>
-<td>打开win10剪贴板（更推荐使用）</td>
-</tr>
-</tbody>
-</table>
-<h2 id="快速编辑">快速编辑</h2>
-<p>Alt + ↑ 或 ↓ 推荐尝试</p>
-<table>
-<colgroup>
-<col style="width: 31%" />
-<col style="width: 68%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>按键</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>双击左键</td>
-<td>快速选中光标所在的单词</td>
-</tr>
-<tr class="even">
-<td>三击左键</td>
-<td>快速选中当前行</td>
-</tr>
-<tr class="odd">
-<td>Alt + 鼠标左键</td>
-<td>列编辑模式</td>
-</tr>
-<tr class="even">
-<td>Alt + ↑ 或 ↓</td>
-<td>将当前行上下移动*</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + ← 或 →</td>
-<td>光标快速移动（按单词跳过会比按字母跳过快很多）</td>
-</tr>
-<tr class="even">
-<td>Shift + ← 或 →</td>
-<td>用键盘左右选取内容</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + Shift + ← 或 →</td>
-<td>用键盘快速左右选中内容</td>
-</tr>
-<tr class="even">
-<td>Alt + Shift + ↑ 或 ↓</td>
-<td>用键盘上下选中内容</td>
-</tr>
-</tbody>
-</table>
-<h2 id="调试相关">调试相关</h2>
-<table>
-<colgroup>
-<col style="width: 21%" />
-<col style="width: 78%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th>按键</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>F9</td>
-<td>设置断点*</td>
-</tr>
-<tr class="even">
-<td>F5</td>
-<td>开始调试，跳转到下个断点</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + F5</td>
-<td>开始执行（非调试状态）</td>
-</tr>
-<tr class="even">
-<td>F10</td>
-<td>逐过程（直接执行完当前行）</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + F10</td>
-<td>运行到光标处*</td>
-</tr>
-<tr class="even">
-<td>F11</td>
-<td>逐语句（会深入进当前行执行）</td>
-</tr>
-<tr class="odd">
-<td>Shift + F11</td>
-<td>跳出当前块</td>
-</tr>
-<tr class="even">
-<td>鼠标拖动黄色箭头</td>
-<td>执行到指定位置，注意可以往回拖，也就是时光倒流（有可能出问题）</td>
-</tr>
-</tbody>
-</table>
-<h2 id="跳转">跳转</h2>
-<table>
-<thead>
-<tr class="header">
-<th>按键</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>F12</td>
-<td>转到定义</td>
-</tr>
-<tr class="even">
-<td>Ctrl + F12</td>
-<td>转到声明</td>
-</tr>
-<tr class="odd">
-<td>Alt + F12</td>
-<td>速览定义</td>
-</tr>
-<tr class="even">
-<td>Shift + F12</td>
-<td>查找所有引用</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + K + T</td>
-<td>查看调用层次结构</td>
-</tr>
-<tr class="even">
-<td>Ctrl + ]</td>
-<td>光标定位至对应的另一个括号</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + G</td>
-<td>定位至某行</td>
-</tr>
-<tr class="even">
-<td>Ctrl + -</td>
-<td>向后导航</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + Shift + -</td>
-<td>向前导航</td>
-</tr>
-<tr class="even">
-<td>Ctrl + F</td>
-<td>开启查找</td>
-</tr>
-<tr class="odd">
-<td>F3</td>
-<td>开启查找后，向后查找</td>
-</tr>
-<tr class="even">
-<td>Ctrl + F3</td>
-<td>开启查找后，向前查找</td>
-</tr>
-</tbody>
-</table>
-<h2 id="其他">其他</h2>
-<table>
-<thead>
-<tr class="header">
-<th>按键</th>
-<th>功能</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Ctrl + S</td>
-<td>保存（建议随手点击，养成肌肉记忆）</td>
-</tr>
-<tr class="even">
-<td>Ctrl + Shift + S</td>
-<td>保存全部文件</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + K + D</td>
-<td>整理代码格式</td>
-</tr>
-<tr class="even">
-<td>Ctrl + K + C</td>
-<td>注释所选内容</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + K + U</td>
-<td>取消注释所选内容</td>
-</tr>
-<tr class="even">
-<td>Ctrl + M + L</td>
-<td>折叠/展开所有代码块（大纲显示）</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + B</td>
-<td>生成项目</td>
-</tr>
-<tr class="even">
-<td>Ctrl + Shift + B</td>
-<td>生成解决方案</td>
-</tr>
-<tr class="odd">
-<td>Ctrl + Pause/Break</td>
-<td>取消生成</td>
-</tr>
-<tr class="even">
-<td>Ctrl + R + R</td>
-<td>重命名变量</td>
-</tr>
-</tbody>
-</table>
+        <h2 id="项目简述">项目简述</h2>
+<p>依据平面假设将建筑原始模型自动重建为简洁多边形网格：基于MRF对三维场景进行语义分割后对建筑物进行快速平面引导分割，依据先验知识提取房屋立面和屋顶等组件并优化其几何位置，构建组件间拓扑连接关系并针对典型建筑结构例如薄板、女儿墙进行拓扑优化，组件平面相交生成候选面并进行选择完成重建。<span id="more"></span></p>
+<p><strong>居民楼：</strong></p>
+<center>
+<img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/auto-nanyang.png" style="zoom: 65%;" />
+</center>
+<p><strong>别墅（原始模型）：</strong></p>
+<iframe width="100%" height="450" src="https://sketchfab.com/models/3f5f29a7b2454959828aa95bce69dd97/embed" frameborder="0" allowvr allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" onmousewheel style="box-sizing: border-box;">
+</iframe>
+<p><strong>别墅（重建后模型）：</strong></p>
+<iframe width="100%" height="450" src="https://sketchfab.com/models/b4c65ba180ca4584812a4bb79a042f29/embed" frameborder="0" allowvr allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" onmousewheel style="box-sizing: border-box;">
+</iframe>
+<h2 id="平面引导分割">平面引导分割</h2>
+<p>基于区域生长算法对Mesh网进行多次引导生长、邻接块融合和空间块融合完成平面分割</p>
+<center>
+<img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/planeseg.result.png" style="zoom: 65%;" />
+</center>
+<h2 id="拓扑关系优化">拓扑关系优化</h2>
+<p>针对薄板、女儿墙等建筑结构进行拓扑优化，修复错误的拓扑连接关系并增加缺少的平面结构</p>
+<center>
+<img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/topo-optim.png" style="zoom: 50%;" />
+</center>
+<h2 id="实验结果">实验结果</h2>
+<p>对多个数据集建筑物进行测试和分析</p>
+<center>
+<img src="https://cdn.jsdelivr.net/gh/WuKongBlog/PicGo/img/auto-recons-result.drawio.png" style="zoom: 50%;" />
+</center>
+<h2 id="总结">总结</h2>
+<p>提出一种基于平面引导分割、拓扑修正的改进三维建筑物模型自动化结构重建方法。对多个数据集的建筑物模型进行测试和分析，结果表明，该方法可以得到简洁可靠的分段平面，获得高保真度的多面体建筑模型，提高了建筑多面体化的结构感知能力。</p>
 
     </div>
 
@@ -555,7 +337,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://www.wukongblog.com/posts/4f174e2f.html" title="VS快捷键集合">https://www.wukongblog.com/posts/4f174e2f.html</a>
+    <a href="https://www.wukongblog.com/posts/9b6a48b3.html" title="建筑物自动化结构重建">https://www.wukongblog.com/posts/9b6a48b3.html</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -566,9 +348,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/C/" rel="tag"># C++</a>
-              <a href="/tags/visual-studio/" rel="tag"># visual studio</a>
-              <a href="/tags/%E5%BF%AB%E6%8D%B7%E9%94%AE/" rel="tag"># 快捷键</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" rel="tag"># 计算机视觉</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag"># 计算机图形学</a>
+              <a href="/tags/%E5%8D%95%E4%BD%93%E5%8C%96/" rel="tag"># 单体化</a>
           </div>
 
         
@@ -577,12 +359,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/posts/f36b55d7.html" rel="prev" title="深度到底是什么">
-      <i class="fa fa-chevron-left"></i> 深度到底是什么
+    <a href="/posts/c2ddb321.html" rel="prev" title="C++使用色条">
+      <i class="fa fa-chevron-left"></i> C++使用色条
     </a></div>
       <div class="post-nav-item">
-    <a href="/posts/86cd5977.html" rel="next" title="C++获取文件夹下所有文件(包括子文件夹)">
-      C++获取文件夹下所有文件(包括子文件夹) <i class="fa fa-chevron-right"></i>
+    <a href="/posts/e923097c.html" rel="next" title="建筑物半自动规则化重建">
+      建筑物半自动规则化重建 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -643,7 +425,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E7%B2%98%E8%B4%B4"><span class="nav-number">1.</span> <span class="nav-text">复制粘贴</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E7%BC%96%E8%BE%91"><span class="nav-number">2.</span> <span class="nav-text">快速编辑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E7%9B%B8%E5%85%B3"><span class="nav-number">3.</span> <span class="nav-text">调试相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%B3%E8%BD%AC"><span class="nav-number">4.</span> <span class="nav-text">跳转</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">5.</span> <span class="nav-text">其他</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%AE%80%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">项目简述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E9%9D%A2%E5%BC%95%E5%AF%BC%E5%88%86%E5%89%B2"><span class="nav-number">2.</span> <span class="nav-text">平面引导分割</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E5%85%B3%E7%B3%BB%E4%BC%98%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">拓扑关系优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">4.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -811,6 +593,59 @@
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
